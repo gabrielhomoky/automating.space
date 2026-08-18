@@ -112,7 +112,8 @@ br.desk-br { display: block; }
 .desk-only { display: block; }
 
 /* ── MATRIX CANVAS ── */
-#matrix { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+/* width/height pin the replaced element to the viewport - see index.html */
+#matrix { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .page   { position: relative; z-index: 1; }
 
 /* ── TYPE ── */
@@ -1023,18 +1024,23 @@ addEventListener('resize', () => {
   const CH = 'アイウエオカキクケコサシスセソタチ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz<>{}[]|/\\=+-*&#@!';
   const R_BASE = 170;
   let mx = -999, my = -999, targetMx = -999, targetMy = -999;
-  let cols, rows, grid, prevBox = null;
+  let cols, rows, grid, prevBox = null, DPR = 0;
   const STYLES = [];
 
   function build(){
-    cv.width = innerWidth; cv.height = innerHeight;
-    cols = Math.ceil(cv.width / FONT); rows = Math.ceil(cv.height / FONT);
+    /* device-pixel backing store, CSS-pixel drawing space - see index.html */
+    DPR = Math.min(window.devicePixelRatio || 1, 3);
+    const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    cols = Math.ceil(w / FONT); rows = Math.ceil(h / FONT);
     grid = Array.from({length: cols}, () => Array.from({length: rows}, () => ({ch: CH[Math.random()*CH.length|0], t: Math.random()*40|0})));
+    cx.setTransform(DPR, 0, 0, DPR, 0, 0);
     cx.font = FONT + 'px monospace'; cx.textBaseline = 'top';
     prevBox = null;
   }
   function frame(){
     requestAnimationFrame(frame);
+    if((Math.min(window.devicePixelRatio || 1, 3)) !== DPR) build();
     if(prevBox){ cx.clearRect(prevBox.x, prevBox.y, prevBox.w, prevBox.h); prevBox = null; }
     if(targetMx < -500 && mx < -500) return;
     mx += (targetMx - mx) * 0.08; my += (targetMy - my) * 0.08;

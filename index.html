@@ -202,7 +202,10 @@ br.desk-br { display: block; }
 .desk-only { display: block; }
 
 /* ── MATRIX CANVAS ── */
-#matrix { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+/* width/height are load-bearing: a canvas is a replaced element, so inset:0
+   alone leaves it at its intrinsic (backing-store) size instead of stretching
+   it to the viewport. */
+#matrix { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .page   { position: relative; z-index: 1; }
 
 /* ── TYPE ── */
@@ -4414,18 +4417,30 @@ inkOnScroll(document.querySelector('.approach-body'), {
   const CH = 'アイウエオカキクケコサシスセソタチ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz<>{}[]|/\\=+-*&#@!';
   const R_BASE = 170;
   let mx = -999, my = -999, targetMx = -999, targetMy = -999;
-  let cols, rows, grid, prevBox = null;
+  let cols, rows, grid, prevBox = null, DPR = 0;
   const STYLES = []; // cached rgba() strings, 1%-alpha buckets - avoids per-cell string allocs
 
   function build(){
-    cv.width = innerWidth; cv.height = innerHeight;
-    cols = Math.ceil(cv.width / FONT); rows = Math.ceil(cv.height / FONT);
+    /* Size the backing store in device pixels, then scale the context so the
+       rest of the routine keeps working in CSS pixels. Without this the glyphs
+       are rasterised at half resolution on a retina screen and stretched, which
+       reads as a smudge rather than type. The grid is measured off the element's
+       own box, not cv.width, or a 2x screen would get twice the columns it needs
+       - and clientWidth rather than innerWidth, so a classic scrollbar does not
+       squeeze the drawing against a box that is narrower than the viewport. */
+    DPR = Math.min(window.devicePixelRatio || 1, 3);
+    const w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    cols = Math.ceil(w / FONT); rows = Math.ceil(h / FONT);
     grid = Array.from({length: cols}, () => Array.from({length: rows}, () => ({ch: CH[Math.random()*CH.length|0], t: Math.random()*40|0})));
+    cx.setTransform(DPR, 0, 0, DPR, 0, 0);
     cx.font = FONT + 'px monospace'; cx.textBaseline = 'top'; // resize resets canvas state - set once here
     prevBox = null;
   }
   function frame(){
     requestAnimationFrame(frame);
+    // a monitor with a different pixel density does not reliably fire resize
+    if((Math.min(window.devicePixelRatio || 1, 3)) !== DPR) build();
     // clear only the area painted last frame instead of the whole screen
     if(prevBox){ cx.clearRect(prevBox.x, prevBox.y, prevBox.w, prevBox.h); prevBox = null; }
     if(targetMx < -500 && mx < -500) return; // pointer never entered - skip all work
