@@ -1,0 +1,6 @@
+# Cloudflare Pages answers /foo.html with a 308 to /foo. For content pages that
+# is harmless and arguably better - nothing on the site links by extension, and
+# the sitemap has always been extensionless. The Google Search Console
+# verification file is the exception: it has to answer at its exact path, so
+# rewrite it in place (status 200) rather than redirecting.
+/google4da6982ad42de92e.html   /google4da6982ad42de92e   200
