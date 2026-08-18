@@ -442,7 +442,9 @@ nav {
   border-radius: 999px; background: var(--black); animation: caret-blink .9s steps(1,end) infinite;
 }
 @keyframes caret-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-#waveCanvas { display: block; width: 100%; height: 28px; }
+/* Full-bleed: the wave runs to the inner edges of the mockup rather than
+   stopping at its 16px text padding, so the fade has room to finish. */
+#waveCanvas { display: block; width: calc(100% + 32px); height: 28px; margin-left: -16px; }
 
 /* ── EMAIL MOCKUP ── a records table: tagged rows, each with the time the
    assistant took to deal with it. The header carries a running total, so the
@@ -4671,8 +4673,8 @@ let prodVisible = false;
   const cx=cv.getContext('2d');
   const N=256, noise=Array.from({length:N},()=>Math.random()*2-1);
   function sn(x){ const i=Math.floor(x)%N,f=x-Math.floor(x),a=noise[(i+N)%N],b=noise[(i+1+N)%N],t=f*f*(3-2*f); return a+(b-a)*t; }
-  const H=28;
-  let t=0, W=0, DPR=0;
+  const H=28, FADE=0.16; // share of the width each end fades in over
+  let t=0, W=0, DPR=0, ink=null;
   function draw(){
     if(!prodVisible){ setTimeout(draw,400); return; } // pause while off-screen
     requestAnimationFrame(draw);
@@ -4688,9 +4690,19 @@ let prodVisible = false;
       W=w; DPR=dpr;
       cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
       cx.setTransform(dpr,0,0,dpr,0,0);
+      /* Running the full width of the card means the line cannot just stop -
+         a blunt end reads as a crop. Fade the stroke out over the last sixth
+         at either end instead. The intermediate stops ease the ramp: a plain
+         two-stop gradient leaves a visible grey tail where the line is still
+         faintly there but no longer reads as ink. */
+      ink=cx.createLinearGradient(0,0,W,0);
+      [[0,0],[.35,.12],[.7,.45],[1,1]].forEach(([at,a])=>{
+        const c='rgba(10,10,10,'+a+')';
+        ink.addColorStop(at*FADE, c); ink.addColorStop(1-at*FADE, c);
+      });
     }
     cx.clearRect(0,0,W,H);
-    cx.beginPath(); cx.strokeStyle='#0a0a0a'; cx.lineWidth=1.5; cx.lineJoin='round'; cx.lineCap='round';
+    cx.beginPath(); cx.strokeStyle=ink; cx.lineWidth=1.5; cx.lineJoin='round'; cx.lineCap='round';
     for(let x=0;x<=W;x++){
       const n=x/W, env=Math.pow(Math.sin(n*Math.PI),0.6)*.8+.2;
       const y=14+env*(sn(n*8+t*1.1)*6+sn(n*18+t*2.3)*3+sn(n*3+t*.6)*4.5+Math.sin(n*28+t*3.8)*1.5+Math.sin(n*9+t*1.9)*2.5);
