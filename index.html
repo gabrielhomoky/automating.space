@@ -439,7 +439,7 @@ nav {
   border-radius: 999px; background: var(--black); animation: caret-blink .9s steps(1,end) infinite;
 }
 @keyframes caret-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-#waveCanvas { display: block; width: 100%; }
+#waveCanvas { display: block; width: 100%; height: 28px; }
 
 /* ── EMAIL MOCKUP ── a records table: tagged rows, each with the time the
    assistant took to deal with it. The header carries a running total, so the
@@ -4656,15 +4656,27 @@ let prodVisible = false;
   const cx=cv.getContext('2d');
   const N=256, noise=Array.from({length:N},()=>Math.random()*2-1);
   function sn(x){ const i=Math.floor(x)%N,f=x-Math.floor(x),a=noise[(i+N)%N],b=noise[(i+1+N)%N],t=f*f*(3-2*f); return a+(b-a)*t; }
-  let t=0, W=0;
+  const H=28;
+  let t=0, W=0, DPR=0;
   function draw(){
     if(!prodVisible){ setTimeout(draw,400); return; } // pause while off-screen
     requestAnimationFrame(draw);
     const w=cv.offsetWidth; if(!w) return;
-    if(w!==W){ W=w; cv.width=W; cv.height=28; } // resize only when width actually changed - reallocating every frame is expensive
-    cx.clearRect(0,0,W,28);
+    /* The backing store is sized in device pixels, not CSS pixels. Without this
+       the browser draws a 28px-tall bitmap and stretches it over 56 or 84
+       physical pixels on a retina screen, which is what made the line read as a
+       soft grey smear instead of ink. CSS holds the box at 28px; the transform
+       lets the rest of the routine keep thinking in CSS pixels. Re-run on a DPR
+       change too - dragging the window to a non-retina monitor changes it. */
+    const dpr=Math.min(window.devicePixelRatio||1,3);
+    if(w!==W||dpr!==DPR){
+      W=w; DPR=dpr;
+      cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+      cx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    cx.clearRect(0,0,W,H);
     cx.beginPath(); cx.strokeStyle='#0a0a0a'; cx.lineWidth=1.5; cx.lineJoin='round'; cx.lineCap='round';
-    for(let x=0;x<=W;x+=2){
+    for(let x=0;x<=W;x++){
       const n=x/W, env=Math.pow(Math.sin(n*Math.PI),0.6)*.8+.2;
       const y=14+env*(sn(n*8+t*1.1)*6+sn(n*18+t*2.3)*3+sn(n*3+t*.6)*4.5+Math.sin(n*28+t*3.8)*1.5+Math.sin(n*9+t*1.9)*2.5);
       x===0?cx.moveTo(x,y):cx.lineTo(x,y);
