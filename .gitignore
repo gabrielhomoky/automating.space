@@ -6,3 +6,4 @@ store-deploy/
 .wrangler/
 products/
 .tmpcheck/
+site-deploy/
