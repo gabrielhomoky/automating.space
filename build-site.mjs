@@ -33,6 +33,8 @@ const EXCLUDE = new Set([
   // build outputs and repo plumbing
   'site-deploy', 'store-deploy', '.git', '.gitignore', '.wrangler',
   'build-site.mjs',
+  // internal docs - must not become public URLs
+  'HANDOFF.md',
   // GitHub Pages artefacts with no meaning on Cloudflare
   '_config.yml', 'CNAME',
 ]);

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Foglalás utáni felkészítő oldal. Csak a foglaló kapja meg a linket (modal +
+     Pre-Call levelek), keresőnek nem szól. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Felkészülés a hívásra - Automating</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts/inter.css">
+<link rel="stylesheet" href="/assets/consent.css">
+<script src="/assets/consent.js" defer></script>
+<script src="/assets/hivas-videos.js"></script>
+<style>
+:root {
+  --black: #0a0a0a; --white: #fff; --ink-2: #3a3a3a; --ink-3: #6b6b6b; --ink-4: #9a9a9a;
+  --line: rgba(10,10,10,.08); --bg-2: #f6f6f5; --ok: #1a7f4b;
+  --r-lg: 24px; --r-md: 18px; --r-sm: 12px;
+  --sh-card: 0 1px 3px rgba(10,10,10,.04), 0 8px 24px rgba(10,10,10,.04);
+  --sh-raise: 0 4px 12px rgba(10,10,10,.06), 0 16px 40px rgba(10,10,10,.08);
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { font-family:'Inter',-apple-system,system-ui,sans-serif; background:var(--white); color:var(--black); line-height:1.5; -webkit-font-smoothing:antialiased; }
+a { color:inherit; }
+a:focus:not(:focus-visible), button:focus:not(:focus-visible) { outline:none; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
+.wrap-wide { max-width: 1040px; margin: 0 auto; padding: 0 22px; }
+
+/* top bar */
+.top { position: sticky; top:0; z-index: 20; background: rgba(255,255,255,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.top .in { display:flex; align-items:center; justify-content:space-between; height:60px; max-width:1040px; margin:0 auto; padding:0 22px; }
+.logo { font-weight:600; letter-spacing:-.02em; text-decoration:none; font-size:16px; display:flex; align-items:center; gap:9px; }
+.logo i { width:10px; height:10px; border-radius:50%; background:var(--black); display:inline-block; }
+.when-pill { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:500; padding:7px 13px; border-radius:100px; background:var(--bg-2); border:1px solid var(--line); white-space:nowrap; }
+.when-pill b { font-weight:600; }
+.when-pill .dot { width:7px; height:7px; border-radius:50%; background:var(--ok); }
+@media (max-width:560px) { .when-pill span.lbl { display:none; } }
+
+/* hero */
+.hero { padding: 64px 0 28px; }
+.eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:var(--ink-3); margin-bottom:18px; }
+.eyebrow .chk { width:18px; height:18px; border-radius:50%; background:var(--black); display:inline-grid; place-items:center; }
+h1 { font-size: clamp(32px, 5.2vw, 50px); line-height:1.08; letter-spacing:-.03em; font-weight:600; max-width: 16ch; }
+.lead { font-size: clamp(17px, 2vw, 20px); color: var(--ink-2); margin-top: 18px; max-width: 56ch; }
+.lead b { color:var(--black); font-weight:600; }
+
+/* video */
+.video { position:relative; margin: 30px 0 0; border-radius: var(--r-lg); overflow:hidden; background: var(--black); aspect-ratio: 16/9; box-shadow: var(--sh-raise); }
+.video video, .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.video .play { position:absolute; inset:0; display:grid; place-items:center; cursor:pointer; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35)); }
+.video .play span { width:76px; height:76px; border-radius:50%; background:var(--white); display:grid; place-items:center; box-shadow: 0 10px 30px rgba(0,0,0,.3); transition: transform .4s var(--ease); }
+.video .play:hover span { transform: scale(1.06); }
+.video .tag { position:absolute; left:16px; bottom:14px; font-size:12px; font-weight:500; color:#fff; background: rgba(0,0,0,.45); padding:6px 10px; border-radius:100px; backdrop-filter: blur(8px); }
+.video-caption { font-size:13px; color:var(--ink-3); margin-top:10px; }
+
+/* when card */
+.when { display:grid; grid-template-columns: 1fr auto; gap: 18px; align-items:center; margin-top: 26px; padding: 20px 22px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); box-shadow: var(--sh-card); }
+.when .d { font-size: 13px; color: var(--ink-3); }
+.when .t { font-size: 20px; font-weight:600; letter-spacing:-.02em; margin-top:2px; }
+.when .t small { font-size:14px; font-weight:500; color:var(--ink-3); margin-left:8px; }
+.when .acts { display:flex; gap:8px; flex-wrap:wrap; }
+@media (max-width:560px) { .when { grid-template-columns:1fr; } }
+.btn { display:inline-flex; align-items:center; gap:8px; background:var(--black); color:var(--white); border:0; padding: 11px 20px; border-radius:100px; font: inherit; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; white-space:nowrap; transition: transform .5s var(--ease), opacity .3s; }
+.btn:hover { transform: translateY(-1px); opacity:.92; }
+.btn.ghost { background: var(--white); color: var(--black); box-shadow: 0 0 0 1px var(--line); }
+.btn.sm { padding: 8px 14px; font-size:13px; }
+.muted { font-size:13px; color: var(--ink-3); }
+
+/* sections */
+section { padding: 56px 0; border-top: 1px solid var(--line); }
+section.soft { background: var(--bg-2); border-top:0; }
+.k { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color: var(--ink-4); margin-bottom: 12px; }
+h2 { font-size: clamp(24px, 3.4vw, 32px); line-height:1.15; letter-spacing:-.025em; font-weight:600; max-width: 24ch; }
+.sub { color: var(--ink-2); margin-top: 12px; font-size: 16px; max-width: 60ch; }
+
+/* steps */
+.steps { display:grid; gap: 12px; margin-top: 26px; }
+.step { display:grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 20px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); }
+.step .n { width:44px; height:44px; border-radius: 50%; background: var(--black); color: #fff; display:grid; place-items:center; font-weight:600; font-size:15px; }
+.step h3 { font-size: 17px; font-weight:600; letter-spacing:-.01em; }
+.step .m { font-size:12px; color: var(--ink-4); font-weight:500; margin-left:8px; }
+.step p { color: var(--ink-2); font-size: 15px; margin-top: 4px; }
+.callout { margin-top: 18px; padding: 18px 20px; border-radius: var(--r-md); background: var(--black); color:#fff; font-size: 15px; }
+.callout b { font-weight:600; }
+
+/* mechanism */
+.mech { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 26px; }
+.mech .c { padding: 20px; border-radius: var(--r-md); border:1px solid var(--line); background: var(--white); }
+.mech h3 { font-size: 16px; font-weight:600; letter-spacing:-.01em; }
+.mech p { font-size: 14.5px; color: var(--ink-2); margin-top: 6px; }
+@media (max-width: 640px) { .mech { grid-template-columns: 1fr; } }
+.numbers { display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 18px; }
+.num { padding: 18px 16px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); }
+.num b { display:block; font-size: 26px; letter-spacing:-.03em; font-weight:600; }
+.num span { font-size: 13px; color: var(--ink-3); }
+@media (max-width: 560px) { .numbers { grid-template-columns: 1fr; } .num { display:flex; align-items:baseline; gap:10px; } }
+
+/* breakouts */
+.tabs { display:flex; gap: 8px; flex-wrap:wrap; margin-top: 22px; }
+.tab { padding: 9px 15px; border-radius:100px; border:1px solid var(--line); background: var(--white); font: inherit; font-size:14px; font-weight:500; cursor:pointer; transition: all .3s var(--ease); }
+.tab[aria-selected="true"] { background: var(--black); color:#fff; border-color: var(--black); }
+.tab .rec { display:inline-block; margin-left:6px; font-size:11px; color: var(--ok); font-weight:600; }
+.tab[aria-selected="true"] .rec { color: #9fe2bf; }
+.panel { display:none; margin-top: 20px; }
+.panel[data-open] { display:block; }
+.panel .hook { font-size: clamp(19px, 2.4vw, 24px); font-weight:600; letter-spacing:-.02em; line-height:1.25; max-width: 30ch; }
+.panel .body { margin-top: 12px; color: var(--ink-2); font-size: 15.5px; max-width: 62ch; }
+.panel ul { margin: 12px 0 0 18px; color: var(--ink-2); font-size: 15px; }
+.panel li { margin: 4px 0; }
+.panel .video { margin-top: 18px; }
+
+/* checklist */
+.check { margin-top: 24px; border:1px solid var(--line); border-radius: var(--r-lg); background: var(--white); overflow:hidden; box-shadow: var(--sh-card); }
+.check .head { display:flex; align-items:center; justify-content:space-between; padding: 16px 20px; border-bottom:1px solid var(--line); }
+.check .head .t { font-weight:600; font-size:15px; }
+.ring { --p: 0; width: 40px; height: 40px; border-radius:50%; background: conic-gradient(var(--black) calc(var(--p) * 1%), var(--bg-2) 0); display:grid; place-items:center; font-size: 11px; font-weight:600; }
+.ring i { width: 30px; height:30px; border-radius:50%; background:#fff; display:grid; place-items:center; font-style:normal; }
+.item { display:grid; grid-template-columns: 26px 1fr; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--line); cursor:pointer; user-select:none; }
+.item:last-child { border-bottom:0; }
+.item input { appearance:none; width:22px; height:22px; margin-top:2px; border-radius: 7px; border: 1.5px solid rgba(10,10,10,.25); display:grid; place-items:center; cursor:pointer; transition: all .2s; }
+.item input:checked { background: var(--black); border-color: var(--black); }
+.item input:checked::after { content:''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px,-1px); }
+.item .l { font-size: 15.5px; font-weight:500; }
+.item .h { font-size: 13.5px; color: var(--ink-3); margin-top: 3px; }
+.item input:checked ~ div .l { color: var(--ink-4); text-decoration: line-through; }
+.item .act { margin-top: 10px; display:flex; gap:8px; flex-wrap:wrap; }
+.done-note { padding: 16px 20px; background: var(--bg-2); font-size: 14px; color: var(--ink-2); display:none; }
+.check[data-done] .done-note { display:block; }
+
+/* faq */
+.faq { margin-top: 22px; border-top:1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style:none; cursor:pointer; padding: 18px 0; font-size: 16px; font-weight:500; display:flex; justify-content:space-between; gap: 16px; align-items:center; }
+.faq summary::-webkit-details-marker { display:none; }
+.faq summary::after { content:'+'; font-size: 20px; color: var(--ink-4); flex:none; transition: transform .3s var(--ease); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq .a { padding: 0 0 18px; color: var(--ink-2); font-size: 15px; max-width: 62ch; }
+
+/* people */
+.people { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+.person { display:flex; gap: 14px; align-items:center; padding: 16px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--white); }
+.person img { width: 56px; height:56px; border-radius: 50%; object-fit: cover; }
+.person b { display:block; font-weight:600; font-size:15px; }
+.person span { font-size: 13px; color: var(--ink-3); }
+@media (max-width:560px) { .people { grid-template-columns:1fr; } }
+.team-note { margin-top: 14px; font-size: 14.5px; color: var(--ink-2); max-width: 62ch; }
+
+/* final */
+.final { text-align:center; padding: 72px 0 60px; }
+.final h2 { margin: 0 auto; }
+.final .acts { display:flex; gap: 10px; justify-content:center; flex-wrap:wrap; margin-top: 22px; }
+footer { border-top:1px solid var(--line); padding: 22px 0 34px; font-size: 13px; color: var(--ink-4); }
+footer .in { display:flex; justify-content:space-between; gap: 12px; flex-wrap:wrap; max-width:1040px; margin:0 auto; padding:0 22px; }
+footer a { color: var(--ink-3); text-decoration:none; }
+
+/* text-only fallback while a video is missing */
+.nov { margin-top: 22px; padding: 20px 22px; border-radius: var(--r-md); background: var(--bg-2); font-size: 15px; color: var(--ink-2); }
+.nov b { color: var(--black); font-weight:600; }
+[hidden] { display:none !important; }
+.reveal { opacity:0; transform: translateY(10px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.in { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+.toast { position:fixed; left:50%; bottom: 22px; transform: translateX(-50%) translateY(20px); background: var(--black); color:#fff; padding: 10px 16px; border-radius: 100px; font-size: 13px; opacity:0; transition: all .4s var(--ease); pointer-events:none; z-index: 30; }
+.toast.show { opacity:1; transform: translateX(-50%); }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="in">
+    <a class="logo" href="/" aria-label="Automating"><i></i>Automating</a>
+    <div class="when-pill" id="topWhen" hidden><span class="dot"></span><span class="lbl">Hívás:</span> <b id="topWhenTxt"></b></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══════════════ 1. KÖSZÖNTŐ ═══════════════ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Az időpont lefoglalva</div>
+    <h1 id="h1">Szia<span id="h1name"></span>, <span id="h1when">hamarosan beszélünk</span>.</h1>
+    <p class="lead">Ez az oldal <b>öt perc olvasás</b>, plusz egy rövid videó, ha van rá időd. Arra való, hogy a hívás ne az ismerkedéssel menjen el, hanem azzal, ami nálatok ma a legtöbb munkát viszi.</p>
+
+    <div id="v-thankyou" data-video="thankyou"></div>
+    <div class="nov" id="nov-thankyou">
+      <b>Köszönöm, hogy időt szántál rá.</b> A hívás előtt átnézem, amit a foglaláskor írtál, és arra készülök. Nem általános bemutató lesz, hanem arról beszélünk, ami nálatok történik.
+    </div>
+
+    <div class="when" id="whenCard">
+      <div>
+        <div class="d">A hívásunk</div>
+        <div class="t"><span id="whenTxt">az e-mailben visszaigazolt időpontban</span><small id="whenIn"></small></div>
+        <div class="muted" style="margin-top:6px" id="meetNote">A Google Meet link a visszaigazoló e-mailben és a naptár-meghívóban van. Egy nappal a hívás előtt emlékeztetőt is küldök.</div>
+      </div>
+      <div class="acts">
+        <a class="btn sm" id="btnMeet" hidden target="_blank" rel="noopener">Belépés a hívásra</a>
+        <button class="btn sm" id="btnCal" type="button" hidden>Naptárba teszem</button>
+        <a class="btn ghost sm" id="btnResched" href="https://cal.com/automating.hu/30-perces-hivas" target="_blank" rel="noopener">Másik időpont</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ 2. ÍGY FOG KINÉZNI ═══════════════ -->
+<section>
+  <div class="wrap">
+    <div class="k">A hívás</div>
+    <h2>Így fog kinézni a harminc perc.</h2>
+    <p class="sub">Nem prezentáció. Három rész, és a végén egy egyértelmű válasz, bármelyik irányba.</p>
+    <div class="steps">
+      <div class="step reveal"><div class="n">1</div><div><h3>Először én kérdezek<span class="m">kb. 12 perc</span></h3><p>Végigvesszük, mi történik egy megkereséssel a beérkezésétől addig, amíg pénz lesz belőle. Melyik lépés viszi az időt, hányan csinálják, mennyibe kerül. Enélkül csak találgatnék.</p></div></div>
+      <div class="step reveal"><div class="n">2</div><div><h3>Utána megmutatom<span class="m">kb. 8 perc</span></h3><p>Mi az ebből, amit ma meg lehet oldani. Nem prezentációt mutatok, hanem működő rendszereket, és azt, hogy nálatok mi lenne belőle.</p></div></div>
+      <div class="step reveal"><div class="n">3</div><div><h3>A végén számokban<span class="m">kb. 10 perc</span></h3><p>Elmondom, mit hozna ez nektek óra és forint szinten, és hogy mennyibe kerül. Ez a szám akkor is a tiéd marad, ha nem dolgozunk együtt.</p></div></div>
+    </div>
+    <div class="callout reveal">A hívás végén szeretném, ha lenne egy <b>igen vagy egy nem</b>. A „majd meggondoljuk"-ból ritkán lesz döntés, és a te idődet is jobban tisztelem ennél. Ha nem passzolunk, azt is kimondom.</div>
+    <p class="sub" style="margin-top:14px">A hívást én vezetem. Semmit nem kell előkészítened azon túl, ami lent a listán van.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. MECHANIZMUS ═══════════════ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="k">Hogyan működik</div>
+    <h2>Nem szoftvert adunk, amit meg kell tanulni.</h2>
+    <p class="sub">Hanem egy réteget, ami elvégzi a napi ismétlődő munkát: felveszi a telefont, olvassa és válaszolja a leveleket, rögzíti a számlákat. Ez a videó végigviszi, hogyan épül fel, és mi a te dolgod benne.</p>
+
+    <div id="v-vsl" data-video="vsl"></div>
+
+    <div class="mech">
+      <div class="c reveal"><h3>AI-alkalmazott, nem eszköz</h3><p>Egy konkrét munkakört vesz át: a recepciós telefonját, az ügyfélszolgálat postaládáját, a számlák rögzítését. Nem neked kell kezelned, ő dolgozik.</p></div>
+      <div class="c reveal"><h3>Emberi jóváhagyás ott, ahol kell</h3><p>Ami kockázatos, az nem megy ki magától: a rendszer előkészít, te egy kattintással jóváhagysz. Azt, hogy hol álljon meg emberi jóváhagyásra, együtt döntjük el.</p></div>
+      <div class="c reveal"><h3>Mi építjük, mi üzemeltetjük</h3><p>A díj fele a megállapodáskor, fele átadáskor. Utána havi üzemeltetés: figyeljük, javítjuk, követjük a változásokat, és havonta egy oldalon leírjuk, mit csinált.</p></div>
+      <div class="c reveal"><h3>A ti folyamatotokra épül</h3><p>Nincs sablon. A hívás első része pont azért van, hogy azt építsük meg, ami nálatok fáj, és ne azt, ami egy bemutatóban jól mutat.</p></div>
+    </div>
+
+    <div class="numbers reveal">
+      <div class="num"><b>30+</b><span>rendszert építettünk meg eddig</span></div>
+      <div class="num"><b>11</b><span>fut ma is élesben ügyfeleknél</span></div>
+      <div class="num"><b>59,4M Ft</b><span>értékben leszállított munka</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. BREAKOUT ═══════════════ -->
+<section>
+  <div class="wrap">
+    <div class="k">A te területed</div>
+    <h2>Ami nálatok a legtöbb időt viszi.</h2>
+    <p class="sub">A foglaláskor bejelölted, mi rabolja az időtöket. Itt az a rész, ami rád vonatkozik, és a hívást is innen indítjuk.</p>
+
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-key="hivasok">Hívások<span class="rec" hidden>te jelölted</span></button>
+      <button class="tab" role="tab" data-key="emailek">E-mailek<span class="rec" hidden>te jelölted</span></button>
+      <button class="tab" role="tab" data-key="admin">Admin és számlák<span class="rec" hidden>te jelölted</span></button>
+      <button class="tab" role="tab" data-key="idopont">Időpont-egyeztetés<span class="rec" hidden>te jelölted</span></button>
+    </div>
+
+    <div class="panel" data-key="hivasok">
+      <div class="hook">Ha valaki hív és nem veszi fel senki, az nem elmaradt hívás. Az elmaradt megrendelés.</div>
+      <div class="body">A hang-asszisztens felveszi a telefont az első csengésre, nap mint nap, este és hétvégén is. Válaszol a visszatérő kérdésekre, időpontot ad, a fontos hívást pedig átadja egy embernek, összefoglalóval.</div>
+      <ul><li>Mi lesz másképp reggel nyolckor: nincs lemaradt hívás az éjszakáról, a visszahívandók listája készen vár.</li><li>A híváson ezt kérdezem: hány hívás jön naponta, mennyi marad lemaradva, mit ér egy megrendelés.</li></ul>
+      <div data-video="breakouts.hivasok"></div>
+    </div>
+    <div class="panel" data-key="emailek">
+      <div class="hook">„Hol van a csomagom?" Ezt ne ember válaszolja meg.</div>
+      <div class="body">Az e-mail operátor olvassa a bejövő leveleket, a visszatérőket megválaszolja, a többihez választ készít elő, amit egy kattintással jóváhagytok. Ami sürgős, azt azonnal jelzi.</div>
+      <ul><li>Ami változik: a postaláda reggel nem nulláról indul, a válaszok a jóváhagyásra várnak.</li><li>A híváson ezt kérdezem: hány levél jön havonta, ki válaszol rájuk, mennyi idő megy el vele.</li></ul>
+      <div data-video="breakouts.emailek"></div>
+    </div>
+    <div class="panel" data-key="admin">
+      <div class="hook">Nem az a kérdés, hogy meg tudjátok-e csinálni kézzel. Hanem hogy mennyibe kerül, hogy még mindig kézzel csináljátok.</div>
+      <div class="body">A dokumentum-operátor a beérkező számlákat, rendeléseket, űrlapokat kiolvassa és rögzíti abba a rendszerbe, amit ma is használtok. Ami nem egyértelmű, azt félreteszi egy embernek.</div>
+      <ul><li>Mi lesz másképp reggel nyolckor: a tegnapi számlák rögzítve, csak a kivételek várnak rád.</li><li>A híváson ezt kérdezem: hány dokumentum havonta, hová kerül, hány kéz nyúl hozzá.</li></ul>
+      <div data-video="breakouts.admin"></div>
+    </div>
+    <div class="panel" data-key="idopont">
+      <div class="hook">Az időpont-egyeztetés nem munka. Csak úgy néz ki.</div>
+      <div class="body">Az asszisztens telefonon, e-mailben vagy chaten egyezteti és megerősíti az időpontokat, emlékeztet, és átrakja, ha kell. A naptár magától telik, nem oda-vissza levelezésből.</div>
+      <ul><li>Ami változik: a mai nap be van töltve, az emlékeztetők kimentek, nem marad üres idősáv egy lemondás miatt.</li><li>A híváson ezt kérdezem: hány egyeztetés hetente, hány érintés egy időpont, mennyi a lemorzsolódás.</li></ul>
+      <div data-video="breakouts.idopont"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. CHECKLIST ═══════════════ -->
+<section class="soft" id="felkeszules">
+  <div class="wrap">
+    <div class="k">Felkészülés</div>
+    <h2>Öt perc, és a hívás a közepén kezdődik.</h2>
+    <p class="sub">Nem kell pontos szám, egy becslés is elég. Ezekkel számolunk a hívás végén.</p>
+
+    <div class="check" id="check">
+      <div class="head"><div class="t">Hívás előtti lista</div><div class="ring" id="ring"><i id="ringTxt">0/5</i></div></div>
+
+      <label class="item"><input type="checkbox" data-step="folyamat"><div><div class="l">Az az egy folyamat, ami ma a legtöbb időt viszi</div><div class="h">Ki csinálja, és mi indítja el. Ha több is van, a legfájóbb.</div></div></label>
+      <label class="item"><input type="checkbox" data-step="orak"><div><div class="l">Nagyjából hány óra ez havonta, összesen</div><div class="h">Ahányan csinálják, szorozva a heti óráikkal, szorozva néggyel. Becslés is jó.</div></div></label>
+      <label class="item"><input type="checkbox" data-step="oradij"><div><div class="l">Mennyibe kerül nálatok egy munkaóra, járulékokkal együtt</div><div class="h">Ezzel a számmal mondom meg a hívás végén, mennyit ér az, amiről beszélünk. Ha nincs kéznél: havi bruttó bér osztva 160-nal, és még hozzá a munkáltatói járulék. Ha ezt sem tudod, a híváson kiszámoljuk.</div></div></label>
+      <label class="item"><input type="checkbox" data-step="donteshozo"><div><div class="l">Ha nem egyedül döntesz: legyen ott a másik döntéshozó is</div><div class="h">Nem azért, hogy nyomás legyen, hanem mert amit elmondok, azt jobb, ha nem neked kell utána elmesélned helyettem.</div><div class="act"><button class="btn ghost sm" type="button" id="btnInvite">Meghívó szöveg másolása</button></div></div></label>
+      <label class="item"><input type="checkbox" data-step="laptop"><div><div class="l">Laptopról csatlakozz, ha tudsz</div><div class="h">Képernyőt osztok, és telefonon a részletek elvesznek.</div></div></label>
+
+      <div class="done-note">Kész. Ennyi elég, a többit a híváson rakjuk össze. Találkozunk <b id="doneWhen"></b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 6. FAQ ═══════════════ -->
+<section>
+  <div class="wrap">
+    <div class="k">Amit a hívás előtt kérdezni szoktak</div>
+    <h2>Őszinte válaszok, mielőtt beszélünk.</h2>
+    <div class="faq" id="faq">
+      <details data-q="ingyenes"><summary>Ha ingyenes, mennyire alapos?</summary><div class="a">Nem azért ingyenes, mert nem ér semmit, hanem mert enélkül nem tudnék felelősen árat mondani. A hívás végére kapsz egy konkrét számot arról, mennyi időt és pénzt visz el ma az a folyamat, amiről beszélünk. Ez akkor is a tiéd marad, ha nem dolgozunk együtt.</div></details>
+      <details data-q="ar"><summary>Mennyibe kerül?</summary><div class="a">Nincs árlistánk, mert nem ugyanazt építjük mindenkinek. A hívás végén pontos számot mondok, nem sávot, és mellé azt is, hogy mit hoz. A díj fele a megállapodáskor, fele átadáskor. A havi üzemeltetés nem előfizetés, hanem a gép üzemanyaga: a futtatás költsége és a felügyelet.</div></details>
+      <details data-q="ido"><summary>Mennyi idő alatt készül el?</summary><div class="a">Egy fókuszált megoldás jellemzően egy-két hét, egy több rendszert összekötő integráció két-négy hét. A híváson ütemtervet mondok, nem becslést.</div></details>
+      <details data-q="adat"><summary>Mi lesz a céges adatainkkal?</summary><div class="a">Az adat nálatok marad, a rendszer a ti fiókjaitokban és rendszereitekben dolgozik. Ami kifelé menne, az ott áll meg, ahol ti kéritek: emberi jóváhagyásnál. A híváson konkrétan végigvesszük, mihez kell hozzáférés, mihez nem, és melyik lépésnél hagy el adat a ti rendszereiteket. Ha kéritek, titoktartási megállapodást írunk alá a hívás előtt.</div></details>
+      <details data-q="nemvallal"><summary>Mit nem vállaltok?</summary><div class="a">Nem vállalunk általános „digitalizáljuk a céget" projektet: egy konkrét folyamatot veszünk le, aminek van mérhető óraszáma. Nem mondunk árat a feltárás előtt, mert az csak találgatás lenne. És nem építünk olyat, amit ti nem tudtok jóváhagyni: ha egy lépésnél nem akartok emberi kaput, azt kimondjuk, és eldöntjük együtt.</div></details>
+      <details data-q="belsos"><summary>Nem tudnánk ezt belsősen megcsinálni?</summary><div class="a">Lehet, hogy igen. A megépítés a munka húsz százaléka, a fenntartás a nyolcvan: a modellek változnak, az integrációk elromlanak, csütörtök reggel valakinek meg kell javítania. Mi ezt vállaljuk. Ha a belső út az észszerűbb, azt a híváson kimondom.</div></details>
+      <details data-q="ertek"><summary>Nem értek a technológiához. Baj?</summary><div class="a">Nem. Nem kell megtanulni semmit, és a híváson sem technológiáról beszélünk, hanem arról, hogy mi lesz másképp reggel nyolckor. A részleteket mi visszük.</div></details>
+      <details data-q="nem"><summary>Mi van, ha a végén azt mondom, nem?</summary><div class="a">Akkor nem. Nem foglak keresni, és a szám, amit kiszámoltunk, a tiéd marad. Egy kérésem van: a híváson mondd ki, ne utána gondold át. A te idődet is jobban tisztelem ennél.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 7. KIK VAGYUNK ═══════════════ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="k">Kivel fogsz beszélni</div>
+    <h2>Két alapító. És a saját AI-csapatunk.</h2>
+    <div class="people">
+      <div class="person reveal"><img src="/assets/team-homoki-gabor.webp" alt="Homoki Gábor"><div><b>Homoki Gábor</b><span>társalapító, ő vezeti a hívást</span></div></div>
+      <div class="person reveal"><img src="/assets/team-hudacsek-bence.webp" alt="Hudácsek Bence"><div><b>Hudácsek Bence</b><span>társalapító, ő építi a rendszereket</span></div></div>
+    </div>
+    <p class="team-note">Amit eladunk, azt magunknak is megépítettük: a cégünk napi működését öt AI-munkatárs viszi, a reggeli jelentéstől a pénzügyi zárásig. Ezért tudjuk pontosan, mi működik a gyakorlatban, és mi csak a bemutatóban.</p>
+    <div class="acts" style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap">
+      <a class="btn ghost sm" href="/case-studies" target="_blank" rel="noopener" data-track="proof_open" data-step="case-studies">Esettanulmányok</a>
+      <a class="btn ghost sm" href="/#demo" target="_blank" rel="noopener" data-track="proof_open" data-step="demo">Élő demó a weboldalon</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 8. ZÁRÁS ═══════════════ -->
+<section class="final">
+  <div class="wrap">
+    <div class="k">Találkozunk</div>
+    <h2 id="finalH2">Találkozunk a híváson.</h2>
+    <p class="sub" style="margin:12px auto 0">Ha közbejönne valami, egy sor is elég, és keresünk másik időpontot. Ha kérdésed van addig, írj: <a href="mailto:gabor@automating.hu">gabor@automating.hu</a></p>
+    <div class="acts">
+      <button class="btn" id="btnCal2" type="button" hidden>Naptárba teszem</button>
+      <a class="btn ghost" id="btnResched2" href="https://cal.com/automating.hu/30-perces-hivas" target="_blank" rel="noopener">Másik időpontot kérek</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer><div class="in"><span>© Automating · Hudácsek Bence e.v. · adószám 91949811-1-28 · <a href="mailto:gabor@automating.hu">gabor@automating.hu</a></span><span><a href="/privacy">Adatkezelés</a> · <a href="/impresszum">Impresszum</a></span></div></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  /* ───────── paraméterek: n = keresztnév, t = ISO kezdés, u = cal.com uid,
+     p = időrablók (vesszővel: hivasok,emailek,admin,idopont), d = döntéshozó (1/2/3) ───────── */
+  var q = new URLSearchParams(location.search);
+  var clean = function (s, n) { return (s || '').replace(/[<>"'&]/g, '').trim().slice(0, n); };
+  /* cal.com "Redirect on booking" + "Forward parameters" esetén a cal.com saját nevei
+     jönnek (name, uid, startTime, és email, amit szándékosan nem olvasunk). */
+  var fullName = clean(q.get('n') || q.get('name'), 60);
+  var name = fullName.split(/\s+/).pop();
+  var uid = clean(q.get('u') || q.get('uid'), 64);
+  var tRaw = q.get('t') || q.get('startTime');
+  var meet = clean(q.get('m'), 200); if (!/^https:\/\/(meet\.google\.com|[a-z0-9.-]*cal\.com|app\.cal\.com|cal\.video|teams\.microsoft\.com|[a-z0-9.-]*zoom\.us)\//.test(meet)) meet = '';
+  var start = tRaw ? new Date(tRaw) : null;
+  if (start && isNaN(start.getTime())) start = null;
+  var probs = clean(q.get('p'), 80).split(',').filter(Boolean);
+  var decision = clean(q.get('d'), 2);
+  var VID = window.HIVAS_VIDEOS || {};
+
+  /* ───────── mérés: saját D1-napló (PII nélkül) + GA4, ha van consent ───────── */
+  function track(event, step, detail) {
+    try {
+      var body = JSON.stringify({ event: event, uid: uid || null, step: step || null, detail: detail || null, variant: 'v1' });
+      if (navigator.sendBeacon) navigator.sendBeacon('/hivas/api/esemeny', new Blob([body], { type: 'application/json' }));
+      else fetch('/hivas/api/esemeny', { method: 'POST', body: body, headers: { 'content-type': 'application/json' }, keepalive: true }).catch(function () {});
+    } catch (e) {}
+    try { if (window.dataLayer) (function () { window.dataLayer.push(arguments); })('event', 'precall_' + event, { step: step || '', detail: detail || '' }); } catch (e) {}
+  }
+  track('view', probs.join('+') || null, decision || null);
+
+  /* ───────── dátum-megjelenítés ───────── */
+  /* „hétfőn, szeptember 1-jén" - a magyar sorrend és a napi toldalék */
+  var SUF_AN = { 2: 1, 3: 1, 6: 1, 8: 1, 13: 1, 16: 1, 18: 1, 20: 1, 23: 1, 26: 1, 28: 1, 30: 1 };
+  var WD = { 'hétfő': 'hétfőn', 'kedd': 'kedden', 'szerda': 'szerdán', 'csütörtök': 'csütörtökön', 'péntek': 'pénteken', 'szombat': 'szombaton', 'vasárnap': 'vasárnap' };
+  var fmtD = function (d) { var wd = d.toLocaleDateString('hu-HU', { weekday: 'long' }); var mo = d.toLocaleDateString('hu-HU', { month: 'long' }); var dn = d.getDate(); var suf = dn === 1 ? '-jén' : SUF_AN[dn] ? '-án' : '-én'; return (WD[wd] || wd) + ', ' + mo + ' ' + dn + suf; };
+  var fmtT = function (d) { return d.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }); };
+  var $ = function (id) { return document.getElementById(id); };
+  if (name) $('h1name').textContent = ' ' + name;
+  if (start) {
+    var whenStr = fmtD(start) + ' ' + fmtT(start);
+    $('h1when').textContent = whenStr + '-kor beszélünk';
+    $('whenTxt').textContent = whenStr;
+    $('topWhenTxt').textContent = start.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric' }) + ' ' + fmtT(start);
+    $('topWhen').hidden = false;
+    $('doneWhen').textContent = whenStr + '-kor';
+    $('finalH2').textContent = 'Találkozunk ' + whenStr + '-kor.';
+    var days = Math.round((start - Date.now()) / 864e5);
+    $('whenIn').textContent = days > 1 ? days + ' nap múlva' : days === 1 ? 'holnap' : days === 0 ? 'ma' : '';
+    $('btnCal').hidden = false; $('btnCal2').hidden = false;
+  }
+  if (uid) {
+    var r = 'https://cal.com/reschedule/' + encodeURIComponent(uid);
+    $('btnResched').href = r; $('btnResched2').href = r;
+  } else {
+    /* uid nélkül nem nyitunk új foglalást a régi mellé: egy sor e-mail elég */
+    var mr = 'mailto:gabor@automating.hu?subject=' + encodeURIComponent('Másik időpontot kérnék');
+    $('btnResched').href = mr; $('btnResched2').href = mr;
+  }
+  if (meet) { $('btnMeet').href = meet; $('btnMeet').hidden = false; $('meetNote').textContent = 'Ugyanez a link a naptár-meghívóban is ott van. Egy nappal a hívás előtt emlékeztetőt is küldök.'; $('btnMeet').addEventListener('click', function () { track('cta_click', 'meet'); }); }
+  [$('btnResched'), $('btnResched2')].forEach(function (b) { b.addEventListener('click', function () { track('reschedule'); }); });
+
+  /* ───────── naptár (.ics + Google) ───────── */
+  function ics() {
+    var end = new Date(start.getTime() + 30 * 6e4);
+    var z = function (d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
+    var s = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Automating//hivas//HU', 'BEGIN:VEVENT', 'UID:' + (uid || z(start)) + '@automating.hu',
+      'DTSTAMP:' + z(new Date()), 'DTSTART:' + z(start), 'DTEND:' + z(end), 'SUMMARY:Hívás az Automatinggal', 'DESCRIPTION:Felkészülés: https://automating.hu/hivas' + (uid ? '?u=' + uid : ''), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var a = document.createElement('a'); a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(s); a.download = 'automating-hivas.ics'; document.body.appendChild(a); a.click(); a.remove();
+  }
+  [$('btnCal'), $('btnCal2')].forEach(function (b) { b.addEventListener('click', function () { track('calendar_add'); ics(); toast('Letöltve. Nyisd meg, és mentsd a naptáradba.'); }); });
+
+  /* ───────── videók ───────── */
+  function get(path) { return path.split('.').reduce(function (o, k) { return o && o[k]; }, VID); }
+  function mount(holder) {
+    var key = holder.getAttribute('data-video'), src = get(key);
+    var nov = $('nov-' + key.replace('.', '-'));
+    if (!src) { holder.hidden = true; return; }
+    if (nov) nov.hidden = true;
+    var box = document.createElement('div'); box.className = 'video';
+    var short = key.split('.').pop();
+    if (src.mp4) {
+      var v = document.createElement('video'); v.src = src.mp4; v.playsInline = true; v.preload = 'metadata'; v.controls = true; if (src.poster) v.poster = src.poster;
+      var play = document.createElement('div'); play.className = 'play'; play.innerHTML = '<span><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#0a0a0a"/></svg></span>';
+      play.addEventListener('click', function () { v.play(); });
+      var marks = {};
+      v.addEventListener('play', function () { play.remove(); if (!marks.s) { marks.s = 1; track('video_start', short); } });
+      v.addEventListener('timeupdate', function () { if (!v.duration) return; var pct = v.currentTime / v.duration; [25, 50, 75].forEach(function (m) { if (pct * 100 >= m && !marks[m]) { marks[m] = 1; track('video_progress', short, String(m)); } }); });
+      v.addEventListener('ended', function () { if (!marks.e) { marks.e = 1; track('video_complete', short); } });
+      box.appendChild(v); box.appendChild(play);
+    } else if (src.youtube) {
+      var f = document.createElement('iframe'); f.src = 'https://www.youtube-nocookie.com/embed/' + src.youtube + '?rel=0&modestbranding=1&enablejsapi=1&origin=' + encodeURIComponent(location.origin); f.allow = 'autoplay; encrypted-media; picture-in-picture'; f.allowFullscreen = true; f.title = 'Videó';
+      box.appendChild(f); ytWatch(f, short);
+    } else if (src.stream) {
+      var s = document.createElement('iframe'); s.src = 'https://iframe.videodelivery.net/' + src.stream; s.allow = 'accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture'; s.allowFullscreen = true; s.title = 'Videó';
+      box.appendChild(s); s.addEventListener('load', function () { track('video_start', short, 'stream-load'); });
+    }
+    if (src.minutes) { var t = document.createElement('div'); t.className = 'tag'; t.textContent = src.minutes + ' perc'; box.appendChild(t); }
+    holder.appendChild(box);
+  }
+  /* YouTube IFrame API: elindítás, negyedek, befejezés. Csak akkor töltődik, ha van YouTube-forrás. */
+  var ytQueue = [];
+  function ytWatch(iframe, short) {
+    ytQueue.push([iframe, short]);
+    if (!window.__ytLoading) { window.__ytLoading = 1; var tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(tag); }
+  }
+  window.onYouTubeIframeAPIReady = function () {
+    ytQueue.forEach(function (pair) {
+      var marks = {}, timer;
+      var p = new YT.Player(pair[0], { events: { onStateChange: function (e) {
+        if (e.data === 1) { if (!marks.s) { marks.s = 1; track('video_start', pair[1]); } timer = setInterval(function () { var d = p.getDuration(); if (!d) return; var pct = p.getCurrentTime() / d * 100; [25, 50, 75].forEach(function (m) { if (pct >= m && !marks[m]) { marks[m] = 1; track('video_progress', pair[1], String(m)); } }); }, 2000); }
+        else { clearInterval(timer); if (e.data === 0 && !marks.e) { marks.e = 1; track('video_complete', pair[1]); } }
+      } } });
+    });
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('[data-video]'), mount);
+
+  /* ───────── breakout tabok: a foglaláskor jelölt időrabló az alapértelmezett ───────── */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  function open(key, why) {
+    tabs.forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-key') === key ? 'true' : 'false'); });
+    panels.forEach(function (p) { if (p.getAttribute('data-key') === key) p.setAttribute('data-open', ''); else p.removeAttribute('data-open'); });
+    if (why === 'click') track('cta_click', 'breakout:' + key);
+  }
+  tabs.forEach(function (t) {
+    if (probs.indexOf(t.getAttribute('data-key')) > -1) t.querySelector('.rec').hidden = false;
+    t.addEventListener('click', function () { open(t.getAttribute('data-key'), 'click'); });
+  });
+  open(probs[0] && tabs.some(function (t) { return t.getAttribute('data-key') === probs[0]; }) ? probs[0] : 'hivasok');
+
+  /* ───────── checklist, uid-hoz kötve, a böngészőben megmarad ───────── */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.item input'));
+  var storeKey = 'hivas-check:' + (uid || 'anon');
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
+  boxes.forEach(function (b) { b.checked = !!saved[b.getAttribute('data-step')]; });
+  if (decision === '1') { /* "Igen, én döntök" - a döntéshozó-tétel kipipálva, de látszik */ var dm = boxes.filter(function (b) { return b.getAttribute('data-step') === 'donteshozo'; })[0]; if (dm && saved.donteshozo === undefined) dm.checked = true; }
+  function refresh(fromClick) {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    $('ring').style.setProperty('--p', n / boxes.length * 100); $('ringTxt').textContent = n + '/' + boxes.length;
+    if (n === boxes.length) { $('check').setAttribute('data-done', ''); if (fromClick) track('checklist_done'); } else $('check').removeAttribute('data-done');
+    var o = {}; boxes.forEach(function (b) { o[b.getAttribute('data-step')] = b.checked; }); try { localStorage.setItem(storeKey, JSON.stringify(o)); } catch (e) {}
+  }
+  boxes.forEach(function (b) { b.addEventListener('change', function () { if (b.checked) track('checklist', b.getAttribute('data-step')); refresh(true); }); });
+  refresh(false);
+
+  /* ───────── döntéshozó-meghívó szöveg ───────── */
+  $('btnInvite').addEventListener('click', function (e) {
+    e.preventDefault();
+    var when = start ? fmtD(start) + ' ' + fmtT(start) : 'a foglalt időpontban';
+    var txt = 'Szia,\n\n' + when + '-kor lesz egy félórás online hívásom az Automatinggal arról, hogy az ismétlődő munkánkat (telefon, e-mail, adminisztráció) hogyan lehetne AI-val kiváltani. A végén konkrét számot kapunk arról, mit hozna és mennyibe kerülne. Jó lenne, ha te is ott lennél, mert közösen döntünk róla. A Google Meet linket továbbítom a naptár-meghívóval.\n\nKöszi!';
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { toast('Kimásolva. Küldd el annak, akivel döntötök.'); }, function () { prompt('Másold ki:', txt); });
+    track('decision_maker');
+  });
+
+  /* ───────── FAQ + proof mérés ───────── */
+  Array.prototype.forEach.call(document.querySelectorAll('#faq details'), function (d) { d.addEventListener('toggle', function () { if (d.open) track('faq_open', d.getAttribute('data-q')); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-track]'), function (a) { a.addEventListener('click', function () { track(a.getAttribute('data-track'), a.getAttribute('data-step')); }); });
+
+  /* ───────── reveal ───────── */
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .12 }) : null;
+  Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function (el) { if (io) io.observe(el); else el.classList.add('in'); });
+
+  var tt; function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('show'); }, 2600); }
+})();
+</script>
+</body>
+</html>
