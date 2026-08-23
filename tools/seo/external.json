@@ -1,0 +1,47 @@
+{
+  "note": "Externally verified facts feeding the audit and the schema. Every entry carries the date it was checked. Re-verify before trusting anything older than a quarter.",
+  "verified_on": "2026-08-23",
+  "sameas_verified": [
+    "https://www.instagram.com/automating.hu/",
+    "https://www.linkedin.com/company/automating-hu/",
+    "https://www.youtube.com/@automatinghu",
+    "https://www.tiktok.com/@automating.hu"
+  ],
+  "sameas_evidence": {
+    "instagram": "profile API 400 = existing account (calibrated against @natgeo), vault handle; 2026-08-23",
+    "linkedin": "hu.linkedin.com/company/automating-hu og:title 'Automating.hu | LinkedIn', 145 followers; 2026-08-23",
+    "youtube": "channel UC8HdEpRUxcXfKUWPm2-DB5g title 'Automating', canonical handle /@automatinghu; 2026-08-23",
+    "tiktok": "Google SERP card 'TikTok · automating.hu, 3,5 E követő' linking www.automating.hu; CLAUDE.md: TikTok active; 2026-08-23",
+    "facebook": "NOT included: Facebook returns a generic 200 'Facebook' title for /automating.hu — no page confirmed (2026-08-23)"
+  },
+  "person_sameas": {
+    "Gábor Homoki": [],
+    "Bence Hudácsek": [
+      "https://x.com/HudacsekB"
+    ]
+  },
+  "google_indexed_pages": 6,
+  "google_evidence": "browser search 'automating.hu' hl=hu: home, blog, 2 posts, case-studies, terms + 'További találatok'; site: operator inconsistent; 2026-08-23",
+  "bing_indexed_pages": 0,
+  "bing_evidence": "Bing 'automating.hu' top-10 unrelated; 2026-08-23",
+  "wikidata": false,
+  "wikipedia": false,
+  "third_party_citations": 3,
+  "citations_evidence": "LinkedIn company page, OPTEN registry listing (Hudácsek Bence EV., Csikvánd), CB Insights profile 'Automating.hu'; 2026-08-23",
+  "google_business_profile": false,
+  "gsc_verified": true,
+  "bing_wmt_verified": false,
+  "indexnow_key": "029268d86892647d8d8c6ad59b72a1fd",
+  "indexnow_submitted": true,
+  "lighthouse": {
+    "/": {
+      "performance": 88,
+      "lcp_s": 3.11,
+      "cls": 0,
+      "tbt_ms": 68,
+      "fcp_s": 2.41,
+      "note": "Lighthouse 13.4 mobile, median of 3, 2026-08-23, after deploy; before: perf 74, LCP 4.2s, FCP 3.9s"
+    }
+  },
+  "indexnow_evidence": "17 sitemap URLs POSTed to api.indexnow.org, HTTP 202, 2026-08-23"
+}

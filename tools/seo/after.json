@@ -1,0 +1,597 @@
+{
+ "SEO": {
+  "score": 94.9,
+  "categories": {
+   "Crawlability & indexing": {
+    "earned": 23.0,
+    "possible": 23,
+    "pct": 100.0
+   },
+   "On-page": {
+    "earned": 22.76,
+    "possible": 24,
+    "pct": 94.8
+   },
+   "International": {
+    "earned": 10.0,
+    "possible": 10,
+    "pct": 100.0
+   },
+   "Structured data": {
+    "earned": 15.0,
+    "possible": 15,
+    "pct": 100.0
+   },
+   "Performance & CWV": {
+    "earned": 15.9,
+    "possible": 20,
+    "pct": 79.5
+   },
+   "Delivery & metadata": {
+    "earned": 12.0,
+    "possible": 12,
+    "pct": 100.0
+   }
+  },
+  "items": [
+   {
+    "category": "Crawlability & indexing",
+    "key": "robots.txt served & valid",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "status=200"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "sitemap declared in robots.txt",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "['https://automating.hu/sitemap.xml', 'https://automating.hu/hirlevel/sitemap.xml']"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "sitemap.xml valid XML",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "status=200 urls=17"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "sitemap covers every indexable page",
+    "earned": 6.0,
+    "possible": 6,
+    "evidence": "complete"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "every sitemap URL answers 200 directly",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "all 200"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "lastmod on every sitemap entry",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "17/17"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "www -> apex single-hop 301",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "301 -> https://automating.hu/"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "http -> https 301",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "301 -> https://automating.hu/"
+   },
+   {
+    "category": "Crawlability & indexing",
+    "key": "unknown path returns 404",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "404"
+   },
+   {
+    "category": "On-page",
+    "key": "title present, unique, 15-65 chars",
+    "earned": 3.69,
+    "possible": 4,
+    "evidence": "12/13 in range; unique=13/13"
+   },
+   {
+    "category": "On-page",
+    "key": "meta description present, unique, 70-165 chars",
+    "earned": 3.69,
+    "possible": 4,
+    "evidence": "12/13; short/long: [('/blog/ai-phone-assistant-cost-en', 171)]"
+   },
+   {
+    "category": "On-page",
+    "key": "exactly one H1 per page",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "violations=[]"
+   },
+   {
+    "category": "On-page",
+    "key": "no thin content on indexable pages (>=600 words)",
+    "earned": 3.38,
+    "possible": 4,
+    "evidence": "thin=[('/blog', 224), ('/blog-en', 286)]"
+   },
+   {
+    "category": "On-page",
+    "key": "images: alt + intrinsic dimensions",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "imgs=7 noalt=0 nodim=0"
+   },
+   {
+    "category": "On-page",
+    "key": "internal linking depth (>=8 internal links/page)",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "weak=[]"
+   },
+   {
+    "category": "On-page",
+    "key": "clean extensionless URLs",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "sitemap URL shapes"
+   },
+   {
+    "category": "International",
+    "key": "hreflang hu+en on every page with a counterpart",
+    "earned": 6.0,
+    "possible": 6,
+    "evidence": "13/13 pages"
+   },
+   {
+    "category": "International",
+    "key": "x-default declared",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "13/13"
+   },
+   {
+    "category": "International",
+    "key": "html lang correct",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Structured data",
+    "key": "Organization + WebSite on home",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "['Answer', 'BreadcrumbList', 'ContactPoint', 'Country', 'EntryPoint', 'FAQPage', 'ImageObject', 'ListItem', 'Offer', 'Organization', 'Person', 'Place', 'PostalAddress', 'PropertyValue', 'Question', 'SearchAction', 'Service', 'SpeakableSpecification', 'Thing', 'WebPage', 'WebSite']"
+   },
+   {
+    "category": "Structured data",
+    "key": "Article schema on every article",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "8/8"
+   },
+   {
+    "category": "Structured data",
+    "key": "BreadcrumbList on non-home pages",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "13/12"
+   },
+   {
+    "category": "Structured data",
+    "key": "all JSON-LD parses",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "parse errors=0"
+   },
+   {
+    "category": "Structured data",
+    "key": "page-level type on every page",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Performance & CWV",
+    "key": "LCP < 2.5s",
+    "earned": 3.5,
+    "possible": 7,
+    "evidence": "LCP=3.11s"
+   },
+   {
+    "category": "Performance & CWV",
+    "key": "CLS < 0.1",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "CLS=0"
+   },
+   {
+    "category": "Performance & CWV",
+    "key": "TBT < 200ms (INP proxy)",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "TBT=68ms"
+   },
+   {
+    "category": "Performance & CWV",
+    "key": "Lighthouse performance score",
+    "earned": 4.4,
+    "possible": 5,
+    "evidence": "perf=88"
+   },
+   {
+    "category": "Delivery & metadata",
+    "key": "security headers",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "['referrer-policy', 'strict-transport-security', 'x-content-type-options']"
+   },
+   {
+    "category": "Delivery & metadata",
+    "key": "complete Open Graph",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Delivery & metadata",
+    "key": "Twitter card",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Delivery & metadata",
+    "key": "absolute self-referencing canonical",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "13/13"
+   }
+  ]
+ },
+ "AEO": {
+  "score": 93.7,
+  "categories": {
+   "Answer structure": {
+    "earned": 27.36,
+    "possible": 30,
+    "pct": 91.2
+   },
+   "Answer schema": {
+    "earned": 23.67,
+    "possible": 25,
+    "pct": 94.7
+   },
+   "Extractability": {
+    "earned": 23.85,
+    "possible": 25,
+    "pct": 95.4
+   },
+   "Machine access": {
+    "earned": 18.85,
+    "possible": 20,
+    "pct": 94.3
+   }
+  },
+  "items": [
+   {
+    "category": "Answer structure",
+    "key": "FAQ marked up where FAQ content exists",
+    "earned": 6.15,
+    "possible": 8,
+    "evidence": "FAQPage on 10 pages: ['/blog/email-automatizalas-ai', '/blog/mit-lehet-automatizalni-kisvallalkozasban', '/blog/ai-telefonos-asszisztens-magyarul', '/blog/ai-telefonos-asszisztens-ara', '/', '/blog/what-to-automate-en', '/blog/ai-phone-assistant-en', '/blog/ai-phone-assistant-cost-en', '/blog/email-automation-ai-en', '/en']"
+   },
+   {
+    "category": "Answer structure",
+    "key": "question-shaped H2/H3 headings",
+    "earned": 6.0,
+    "possible": 6,
+    "evidence": "79/171 question headings"
+   },
+   {
+    "category": "Answer structure",
+    "key": "self-contained answer paragraph under each question",
+    "earned": 5.21,
+    "possible": 6,
+    "evidence": "33/38"
+   },
+   {
+    "category": "Answer structure",
+    "key": "lists/tables for extractable facts",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "67 list/table blocks across 13 pages"
+   },
+   {
+    "category": "Answer structure",
+    "key": "answerable lede present",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Answer schema",
+    "key": "FAQPage / QAPage valid Question+Answer nodes",
+    "earned": 7.0,
+    "possible": 7,
+    "evidence": "['/blog/email-automatizalas-ai', '/blog/mit-lehet-automatizalni-kisvallalkozasban', '/blog/ai-telefonos-asszisztens-magyarul', '/blog/ai-telefonos-asszisztens-ara', '/', '/blog/what-to-automate-en', '/blog/ai-phone-assistant-en', '/blog/ai-phone-assistant-cost-en', '/blog/email-automation-ai-en', '/en']"
+   },
+   {
+    "category": "Answer schema",
+    "key": "speakable specification",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Answer schema",
+    "key": "Article: headline+dates+author+description",
+    "earned": 6.0,
+    "possible": 6,
+    "evidence": "8/8"
+   },
+   {
+    "category": "Answer schema",
+    "key": "about/mentions entity linking",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "13/13"
+   },
+   {
+    "category": "Answer schema",
+    "key": "offer/price machine-readable",
+    "earned": 2.67,
+    "possible": 4,
+    "evidence": "2 pages expose price data"
+   },
+   {
+    "category": "Extractability",
+    "key": "semantic HTML landmarks",
+    "earned": 4.85,
+    "possible": 6,
+    "evidence": "avg landmark coverage 0.81"
+   },
+   {
+    "category": "Extractability",
+    "key": "primary content in server HTML (no JS needed)",
+    "earned": 7.0,
+    "possible": 7,
+    "evidence": "13/13 pages carry >200 words in raw HTML"
+   },
+   {
+    "category": "Extractability",
+    "key": "content-to-code ratio",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "avg=0.2169"
+   },
+   {
+    "category": "Extractability",
+    "key": "explicit numeric facts on home",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "12 numeric facts"
+   },
+   {
+    "category": "Extractability",
+    "key": "dateModified within 120 days",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "8/8"
+   },
+   {
+    "category": "Machine access",
+    "key": "llms.txt present and well-formed",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "status=200 bytes=4113"
+   },
+   {
+    "category": "Machine access",
+    "key": "llms-full.txt full-corpus file",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "status=200 bytes=111531"
+   },
+   {
+    "category": "Machine access",
+    "key": "AI crawlers explicitly addressed in robots.txt",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "named=['gptbot', 'oai-searchbot', 'chatgpt-user', 'claudebot', 'perplexitybot', 'google-extended', 'bingbot', 'applebot-extended']"
+   },
+   {
+    "category": "Machine access",
+    "key": "AI crawlers actually served 200",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "{'GPTBot/1.2': 200, 'ClaudeBot/1.0': 200, 'PerplexityBot/1.0': 200, 'OAI-SearchBot/1.0': 200, 'bingbot/2.0': 200}"
+   },
+   {
+    "category": "Machine access",
+    "key": "markdown/plain-text alternates advertised",
+    "earned": 1.85,
+    "possible": 3,
+    "evidence": "8/13"
+   }
+  ]
+ },
+ "GEO": {
+  "score": 70.7,
+  "categories": {
+   "Entity & authority": {
+    "earned": 19.94,
+    "possible": 30,
+    "pct": 66.5
+   },
+   "Citation-worthiness": {
+    "earned": 15.66,
+    "possible": 25,
+    "pct": 62.6
+   },
+   "Retrieval surface": {
+    "earned": 17.5,
+    "possible": 25,
+    "pct": 70.0
+   },
+   "Answer-space coverage": {
+    "earned": 17.6,
+    "possible": 20,
+    "pct": 88.0
+   }
+  },
+  "items": [
+   {
+    "category": "Entity & authority",
+    "key": "sameAs to verified external profiles (>=5)",
+    "earned": 6.4,
+    "possible": 8,
+    "evidence": "4 sameAs: ['https://www.instagram.com/automating.hu/', 'https://www.linkedin.com/company/automating-hu/', 'https://www.youtube.com/@automatinghu', 'https://www.tiktok.com/@automating.hu']"
+   },
+   {
+    "category": "Entity & authority",
+    "key": "Organization identity completeness",
+    "earned": 6.42,
+    "possible": 7,
+    "evidence": "11/12: missing=['foundingDate']"
+   },
+   {
+    "category": "Entity & authority",
+    "key": "founders as Person entities with sameAs",
+    "earned": 2.0,
+    "possible": 4,
+    "evidence": "2 Person nodes, 1 with sameAs"
+   },
+   {
+    "category": "Entity & authority",
+    "key": "public legal identity (impresszum completeness)",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "4/4 legal fields present"
+   },
+   {
+    "category": "Entity & authority",
+    "key": "Wikidata / Wikipedia entity",
+    "earned": 0.0,
+    "possible": 4,
+    "evidence": "wikidata=False"
+   },
+   {
+    "category": "Entity & authority",
+    "key": "third-party citations of the brand",
+    "earned": 1.12,
+    "possible": 3,
+    "evidence": "3 verified citations"
+   },
+   {
+    "category": "Citation-worthiness",
+    "key": "statistics density (GEO: +30-40% visibility)",
+    "earned": 3.66,
+    "possible": 7,
+    "evidence": "68 statistics across 13 pages"
+   },
+   {
+    "category": "Citation-worthiness",
+    "key": "quotations",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "28 quotations"
+   },
+   {
+    "category": "Citation-worthiness",
+    "key": "outbound citations to authoritative sources",
+    "earned": 0.0,
+    "possible": 6,
+    "evidence": "0 distinct external refs: []"
+   },
+   {
+    "category": "Citation-worthiness",
+    "key": "E-E-A-T signals (author identity, credentials, imprint)",
+    "earned": 7.0,
+    "possible": 7,
+    "evidence": "4/4"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "indexed in Google",
+    "earned": 2.5,
+    "possible": 5,
+    "evidence": "6 pages"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "indexed in Bing (feeds ChatGPT/Copilot)",
+    "earned": 0.0,
+    "possible": 5,
+    "evidence": "0 pages"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "IndexNow adopted (Bing/Yandex/Seznam instant indexing)",
+    "earned": 4.0,
+    "possible": 4,
+    "evidence": "indexnow=True"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "both languages at crawlable URLs in sitemap",
+    "earned": 5.0,
+    "possible": 5,
+    "evidence": "7 EN URLs in sitemap"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "full-corpus machine file (llms-full.txt)",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "200"
+   },
+   {
+    "category": "Retrieval surface",
+    "key": "freshness signal (newest lastmod < 60 days)",
+    "earned": 3.0,
+    "possible": 3,
+    "evidence": "newest lastmod 2026-08-18 (5d old)"
+   },
+   {
+    "category": "Answer-space coverage",
+    "key": "commercial intent coverage",
+    "earned": 8.0,
+    "possible": 8,
+    "evidence": "['pricing', 'how-it-works', 'comparison', 'roi', 'integration', 'compliance', 'use-cases', 'getting-started']"
+   },
+   {
+    "category": "Answer-space coverage",
+    "key": "brand + category co-occurrence",
+    "earned": 3.6,
+    "possible": 4,
+    "evidence": "36 brand mentions in body copy"
+   },
+   {
+    "category": "Answer-space coverage",
+    "key": "proprietary/unique data (prices, cases, timelines)",
+    "earned": 4.0,
+    "possible": 6,
+    "evidence": "2/3"
+   },
+   {
+    "category": "Answer-space coverage",
+    "key": "language coverage of the answer corpus",
+    "earned": 2.0,
+    "possible": 2,
+    "evidence": "0 EN pages"
+   }
+  ]
+ }
+}

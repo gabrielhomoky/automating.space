@@ -27,8 +27,8 @@
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://automating.hu/case-studies.html",
-      "url": "https://automating.hu/case-studies.html",
+      "@id": "https://automating.hu/case-studies",
+      "url": "https://automating.hu/case-studies",
       "name": "Esettanulmányok — Automating",
       "description": "AI-automatizálási esettanulmányok valós vállalkozásoktól.",
       "isPartOf": { "@id": "https://automating.hu/#website" },
@@ -38,7 +38,7 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Főoldal", "item": "https://automating.hu/" },
-        { "@type": "ListItem", "position": 2, "name": "Esettanulmányok", "item": "https://automating.hu/case-studies.html" }
+        { "@type": "ListItem", "position": 2, "name": "Esettanulmányok", "item": "https://automating.hu/case-studies" }
       ]
     },
     {
@@ -660,7 +660,8 @@ function setLang(lang) {
   const tr = T[lang];
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if(tr[key] !== undefined) el.innerHTML = tr[key];
+    /* skip no-op writes: a rewrite of identical markup still repaints the hero and pushes the LCP candidate later */
+    if(tr[key] !== undefined && el.innerHTML !== tr[key]) el.innerHTML = tr[key];
   });
 }
 

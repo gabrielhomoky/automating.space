@@ -56,3 +56,7 @@ for (const banned of ['store.html', 'termek', 'functions']) {
 
 console.log(`site-deploy/ built - ${copied.length} entries: ${copied.sort().join(', ')}`);
 console.log('deploy with:  cd site-deploy && wrangler pages deploy . --project-name automating-hu');
+
+/* SEO / AEO / GEO layer: machine-facing additions and delivery optimisations on
+   top of the assembled output. Source HTML stays untouched. */
+await import('./tools/seo/enhance.mjs');
