@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Foglalás utáni felkészítő oldal. Csak a foglaló kapja meg a linket (modal +
-     Pre-Call levelek), keresőnek nem szól. -->
+<!-- Foglalás utáni felkészítő oldal (v2, 2026-08-23). Csak a foglaló kapja meg a
+     linket (modal + Pre-Call levelek), keresőnek nem szól. Szerkezet: köszöntő videó
+     → fő videó (mechanizmus) → checklist → kifogás-videók → proof. Amíg egy videó
+     nincs kész (assets/hivas-videos.js), a helyén igényes "hamarosan" keret áll. -->
 <meta name="robots" content="noindex, nofollow">
 <title>Felkészülés a hívásra - Automating</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -27,7 +29,6 @@ body { font-family:'Inter',-apple-system,system-ui,sans-serif; background:var(--
 a { color:inherit; }
 a:focus:not(:focus-visible), button:focus:not(:focus-visible) { outline:none; }
 .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
-.wrap-wide { max-width: 1040px; margin: 0 auto; padding: 0 22px; }
 
 /* top bar */
 .top { position: sticky; top:0; z-index: 20; background: rgba(255,255,255,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
@@ -39,30 +40,61 @@ a:focus:not(:focus-visible), button:focus:not(:focus-visible) { outline:none; }
 .when-pill .dot { width:7px; height:7px; border-radius:50%; background:var(--ok); }
 @media (max-width:560px) { .when-pill span.lbl { display:none; } }
 
-/* hero */
-.hero { padding: 64px 0 28px; }
-.eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:var(--ink-3); margin-bottom:18px; }
-.eyebrow .chk { width:18px; height:18px; border-radius:50%; background:var(--black); display:inline-grid; place-items:center; }
-h1 { font-size: clamp(32px, 5.2vw, 50px); line-height:1.08; letter-spacing:-.03em; font-weight:600; max-width: 16ch; }
-.lead { font-size: clamp(17px, 2vw, 20px); color: var(--ink-2); margin-top: 18px; max-width: 56ch; }
+/* hero + haladás-sáv */
+.hero { padding: 46px 0 28px; }
+.progress { margin: 0 0 26px; }
+.progress .lbl { display:flex; justify-content:space-between; gap:12px; font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin-bottom:9px; }
+.progress .lbl b { color: var(--ok); font-weight:600; letter-spacing:.06em; }
+.progress .bar { height:8px; border-radius:100px; background:var(--bg-2); border:1px solid var(--line); overflow:hidden; }
+.progress .bar i { display:block; height:100%; width:85%; border-radius:100px; background: repeating-linear-gradient(-55deg, var(--black) 0 12px, #2e2e2e 12px 24px); }
+.eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:var(--ink-3); margin-bottom:16px; }
+.eyebrow .chk { width:18px; height:18px; border-radius:50%; background:var(--ok); display:inline-grid; place-items:center; }
+h1 { font-size: clamp(31px, 5vw, 46px); line-height:1.08; letter-spacing:-.03em; font-weight:600; max-width: 18ch; }
+.lead { font-size: clamp(17px, 2vw, 19px); color: var(--ink-2); margin-top: 16px; max-width: 58ch; }
 .lead b { color:var(--black); font-weight:600; }
 
-/* video */
-.video { position:relative; margin: 30px 0 0; border-radius: var(--r-lg); overflow:hidden; background: var(--black); aspect-ratio: 16/9; box-shadow: var(--sh-raise); }
+/* videó-keret (kész videó és "hamarosan" keret ugyanabban a méretben) */
+.video { position:relative; margin: 26px 0 0; border-radius: var(--r-lg); overflow:hidden; background: var(--black); aspect-ratio: 16/9; box-shadow: var(--sh-raise); }
 .video video, .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
 .video .play { position:absolute; inset:0; display:grid; place-items:center; cursor:pointer; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35)); }
 .video .play span { width:76px; height:76px; border-radius:50%; background:var(--white); display:grid; place-items:center; box-shadow: 0 10px 30px rgba(0,0,0,.3); transition: transform .4s var(--ease); }
 .video .play:hover span { transform: scale(1.06); }
-.video .tag { position:absolute; left:16px; bottom:14px; font-size:12px; font-weight:500; color:#fff; background: rgba(0,0,0,.45); padding:6px 10px; border-radius:100px; backdrop-filter: blur(8px); }
-.video-caption { font-size:13px; color:var(--ink-3); margin-top:10px; }
+.video .tag { position:absolute; left:16px; bottom:14px; font-size:12px; font-weight:500; color:#fff; background: rgba(0,0,0,.45); padding:6px 10px; border-radius:100px; backdrop-filter: blur(8px); z-index:2; }
+/* "hamarosan" keret: a végleges lejátszó mérete és hierarchiája, felvétel előtt */
+.video.soon { background: radial-gradient(120% 160% at 18% 0%, #23262b 0%, #101114 55%, #0a0a0b 100%); }
+.video.soon::before { content:''; position:absolute; inset:0; background-image: radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px); background-size: 22px 22px; }
+.soon-in { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; color:#fff; padding: 20px 26px; }
+.soon-in img { width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,.25); }
+.soon-in .who { font-size:12.5px; font-weight:500; color:rgba(255,255,255,.6); }
+.soon-in .ttl { font-size: clamp(16px, 2.4vw, 21px); font-weight:600; letter-spacing:-.015em; line-height:1.3; max-width: 30ch; }
+.soon-in .st { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; color:rgba(255,255,255,.75); background: rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.14); padding:6px 12px; border-radius:100px; }
+.soon-in .st i { width:7px; height:7px; border-radius:50%; background:#e0a83c; animation: pulse 2.2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.35 } }
+@media (prefers-reduced-motion: reduce) { .soon-in .st i { animation:none; } }
+@media (max-width:560px) { .soon-in img { width:48px; height:48px; } .soon-in { gap:9px; } }
+.video-note { font-size:13px; color:var(--ink-3); margin-top:10px; }
+
+/* fejezetek a fő videó alatt */
+.chapters { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.chapters span { font-size:12.5px; font-weight:500; color:var(--ink-2); background:var(--white); border:1px solid var(--line); border-radius:100px; padding:6px 12px; }
+.chapters b { font-weight:600; color:var(--ink-4); margin-right:5px; }
+
+/* "inkább elolvasom" */
+.readtoggle { margin-top:16px; border:1px solid var(--line); border-radius: var(--r-md); background:var(--white); }
+.readtoggle summary { list-style:none; cursor:pointer; padding:15px 18px; font-size:14.5px; font-weight:500; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.readtoggle summary::-webkit-details-marker { display:none; }
+.readtoggle summary::after { content:'+'; font-size:19px; color:var(--ink-4); transition: transform .3s var(--ease); }
+.readtoggle[open] summary::after { transform: rotate(45deg); }
+.readtoggle .in { padding: 2px 18px 18px; color:var(--ink-2); font-size:15px; }
+.readtoggle .in p { margin-top:10px; }
+.readtoggle .in b { color:var(--black); font-weight:600; }
 
 /* when card */
-.when { display:grid; grid-template-columns: 1fr auto; gap: 18px; align-items:center; margin-top: 26px; padding: 20px 22px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); box-shadow: var(--sh-card); }
+.when { display:grid; gap: 6px; margin-top: 22px; padding: 20px 22px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); box-shadow: var(--sh-card); }
 .when .d { font-size: 13px; color: var(--ink-3); }
 .when .t { font-size: 20px; font-weight:600; letter-spacing:-.02em; margin-top:2px; }
 .when .t small { font-size:14px; font-weight:500; color:var(--ink-3); margin-left:8px; }
-.when .acts { display:flex; gap:8px; flex-wrap:wrap; }
-@media (max-width:560px) { .when { grid-template-columns:1fr; } }
+.when .acts { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
 .btn { display:inline-flex; align-items:center; gap:8px; background:var(--black); color:var(--white); border:0; padding: 11px 20px; border-radius:100px; font: inherit; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; white-space:nowrap; transition: transform .5s var(--ease), opacity .3s; }
 .btn:hover { transform: translateY(-1px); opacity:.92; }
 .btn.ghost { background: var(--white); color: var(--black); box-shadow: 0 0 0 1px var(--line); }
@@ -73,65 +105,67 @@ h1 { font-size: clamp(32px, 5.2vw, 50px); line-height:1.08; letter-spacing:-.03e
 section { padding: 56px 0; border-top: 1px solid var(--line); }
 section.soft { background: var(--bg-2); border-top:0; }
 .k { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color: var(--ink-4); margin-bottom: 12px; }
-h2 { font-size: clamp(24px, 3.4vw, 32px); line-height:1.15; letter-spacing:-.025em; font-weight:600; max-width: 24ch; }
+h2 { font-size: clamp(24px, 3.4vw, 32px); line-height:1.15; letter-spacing:-.025em; font-weight:600; max-width: 26ch; }
 .sub { color: var(--ink-2); margin-top: 12px; font-size: 16px; max-width: 60ch; }
 
-/* steps */
-.steps { display:grid; gap: 12px; margin-top: 26px; }
-.step { display:grid; grid-template-columns: 52px 1fr; gap: 16px; padding: 20px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); }
-.step .n { width:44px; height:44px; border-radius: 50%; background: var(--black); color: #fff; display:grid; place-items:center; font-weight:600; font-size:15px; }
-.step h3 { font-size: 17px; font-weight:600; letter-spacing:-.01em; }
-.step .m { font-size:12px; color: var(--ink-4); font-weight:500; margin-left:8px; }
-.step p { color: var(--ink-2); font-size: 15px; margin-top: 4px; }
+/* a hívás 3 lépése (kompakt sáv a hero alján) */
+.calltri { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top: 22px; }
+.calltri .c { padding: 15px 16px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); }
+.calltri b { display:block; font-size:14.5px; font-weight:600; letter-spacing:-.01em; }
+.calltri i { font-style:normal; font-size:11.5px; font-weight:600; color:var(--ink-4); letter-spacing:.05em; text-transform:uppercase; }
+.calltri p { font-size:13px; color:var(--ink-3); margin-top:3px; }
+@media (max-width:640px) { .calltri { grid-template-columns:1fr; } }
 .callout { margin-top: 18px; padding: 18px 20px; border-radius: var(--r-md); background: var(--black); color:#fff; font-size: 15px; }
 .callout b { font-weight:600; }
 
-/* mechanism */
-.mech { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 26px; }
+/* mechanizmus-kártyák (a videó "olvasható" kísérője) */
+.mech { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 24px; }
 .mech .c { padding: 20px; border-radius: var(--r-md); border:1px solid var(--line); background: var(--white); }
 .mech h3 { font-size: 16px; font-weight:600; letter-spacing:-.01em; }
 .mech p { font-size: 14.5px; color: var(--ink-2); margin-top: 6px; }
 @media (max-width: 640px) { .mech { grid-template-columns: 1fr; } }
-.numbers { display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 18px; }
-.num { padding: 18px 16px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); }
-.num b { display:block; font-size: 26px; letter-spacing:-.03em; font-weight:600; }
-.num span { font-size: 13px; color: var(--ink-3); }
-@media (max-width: 560px) { .numbers { grid-template-columns: 1fr; } .num { display:flex; align-items:baseline; gap:10px; } }
 
-/* breakouts */
-.tabs { display:flex; gap: 8px; flex-wrap:wrap; margin-top: 22px; }
-.tab { padding: 9px 15px; border-radius:100px; border:1px solid var(--line); background: var(--white); font: inherit; font-size:14px; font-weight:500; cursor:pointer; transition: all .3s var(--ease); }
-.tab[aria-selected="true"] { background: var(--black); color:#fff; border-color: var(--black); }
-.tab .rec { display:inline-block; margin-left:6px; font-size:11px; color: var(--ok); font-weight:600; }
-.tab[aria-selected="true"] .rec { color: #9fe2bf; }
-.panel { display:none; margin-top: 20px; }
-.panel[data-open] { display:block; }
-.panel .hook { font-size: clamp(19px, 2.4vw, 24px); font-weight:600; letter-spacing:-.02em; line-height:1.25; max-width: 30ch; }
-.panel .body { margin-top: 12px; color: var(--ink-2); font-size: 15.5px; max-width: 62ch; }
-.panel ul { margin: 12px 0 0 18px; color: var(--ink-2); font-size: 15px; }
-.panel li { margin: 4px 0; }
-.panel .video { margin-top: 18px; }
+/* a te területed (a foglaláskor jelölt időrablók) */
+.areas { display:grid; gap:12px; margin-top: 24px; }
+.area { padding: 18px 20px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); }
+.area .top-line { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.area h3 { font-size: 16px; font-weight:600; letter-spacing:-.01em; }
+.area .rec { font-size:11px; color: var(--ok); font-weight:600; background: rgba(26,127,75,.09); padding:4px 9px; border-radius:100px; }
+.area .hook { font-size: 15px; font-weight:500; color:var(--black); margin-top:8px; max-width: 56ch; }
+.area p { font-size: 14.5px; color: var(--ink-2); margin-top: 7px; max-width: 62ch; }
+.area .ask { font-size: 13.5px; color: var(--ink-3); margin-top: 9px; padding-top: 9px; border-top:1px dashed var(--line); }
+.area .ask b { color: var(--ink-2); font-weight:600; }
 
-/* checklist */
-.check { margin-top: 24px; border:1px solid var(--line); border-radius: var(--r-lg); background: var(--white); overflow:hidden; box-shadow: var(--sh-card); }
-.check .head { display:flex; align-items:center; justify-content:space-between; padding: 16px 20px; border-bottom:1px solid var(--line); }
-.check .head .t { font-weight:600; font-size:15px; }
-.ring { --p: 0; width: 40px; height: 40px; border-radius:50%; background: conic-gradient(var(--black) calc(var(--p) * 1%), var(--bg-2) 0); display:grid; place-items:center; font-size: 11px; font-weight:600; }
-.ring i { width: 30px; height:30px; border-radius:50%; background:#fff; display:grid; place-items:center; font-style:normal; }
-.item { display:grid; grid-template-columns: 26px 1fr; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--line); cursor:pointer; user-select:none; }
-.item:last-child { border-bottom:0; }
-.item input { appearance:none; width:22px; height:22px; margin-top:2px; border-radius: 7px; border: 1.5px solid rgba(10,10,10,.25); display:grid; place-items:center; cursor:pointer; transition: all .2s; }
-.item input:checked { background: var(--black); border-color: var(--black); }
-.item input:checked::after { content:''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px,-1px); }
-.item .l { font-size: 15.5px; font-weight:500; }
-.item .h { font-size: 13.5px; color: var(--ink-3); margin-top: 3px; }
-.item input:checked ~ div .l { color: var(--ink-4); text-decoration: line-through; }
-.item .act { margin-top: 10px; display:flex; gap:8px; flex-wrap:wrap; }
-.done-note { padding: 16px 20px; background: var(--bg-2); font-size: 14px; color: var(--ink-2); display:none; }
-.check[data-done] .done-note { display:block; }
+/* checklist lépés-kártyák */
+.checkhead { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top: 4px; }
+.ring { --p: 0; width: 46px; height: 46px; border-radius:50%; background: conic-gradient(var(--black) calc(var(--p) * 1%), rgba(10,10,10,.08) 0); display:grid; place-items:center; font-size: 11.5px; font-weight:600; flex:none; }
+.ring i { width: 35px; height:35px; border-radius:50%; background:var(--bg-2); display:grid; place-items:center; font-style:normal; }
+section.soft .ring i { background: var(--bg-2); }
+.steps { display:grid; gap: 12px; margin-top: 24px; }
+.step { display:grid; grid-template-columns: 30px 1fr; gap: 15px; padding: 20px 22px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); cursor:pointer; user-select:none; box-shadow: var(--sh-card); }
+.step .kk { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-4); margin-bottom:4px; }
+.step h3 { font-size: 16.5px; font-weight:600; letter-spacing:-.01em; }
+.step p { color: var(--ink-2); font-size: 14.5px; margin-top: 5px; max-width: 60ch; }
+.step .act { margin-top: 12px; display:flex; gap:8px; flex-wrap:wrap; }
+.step input { appearance:none; width:24px; height:24px; margin-top:22px; border-radius: 8px; border: 1.5px solid rgba(10,10,10,.25); display:grid; place-items:center; cursor:pointer; transition: all .2s; background:var(--white); }
+.step input:checked { background: var(--black); border-color: var(--black); }
+.step input:checked::after { content:''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px,-1px); }
+.step input:checked ~ div h3 { color: var(--ink-4); text-decoration: line-through; }
+.done-note { margin-top: 14px; padding: 16px 20px; border-radius: var(--r-md); background: var(--black); color:#fff; font-size: 14.5px; display:none; }
+.done-note b { font-weight: 600; }
+.steps-wrap[data-done] .done-note { display:block; }
 
-/* faq */
-.faq { margin-top: 22px; border-top:1px solid var(--line); }
+/* kifogás-videók (breakout) */
+.qa { margin-top: 30px; }
+.qa + .qa { margin-top: 44px; }
+.qa h3 { font-size: clamp(19px, 2.6vw, 24px); font-weight:600; letter-spacing:-.02em; line-height:1.25; max-width: 30ch; }
+.qa .a { margin-top: 14px; color: var(--ink-2); font-size: 15.5px; max-width: 62ch; }
+.qa .a b { color:var(--black); font-weight:600; }
+.qa .video { margin-top: 18px; }
+.qa .a.after-video { margin-top: 16px; font-size: 14.5px; }
+
+/* rövid faq a maradék kérdésekre */
+.faq { margin-top: 34px; border-top:1px solid var(--line); }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary { list-style:none; cursor:pointer; padding: 18px 0; font-size: 16px; font-weight:500; display:flex; justify-content:space-between; gap: 16px; align-items:center; }
 .faq summary::-webkit-details-marker { display:none; }
@@ -139,8 +173,19 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); line-height:1.15; letter-spacing:-.025
 .faq details[open] summary::after { transform: rotate(45deg); }
 .faq .a { padding: 0 0 18px; color: var(--ink-2); font-size: 15px; max-width: 62ch; }
 
-/* people */
-.people { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+/* proof */
+.numbers { display:grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 24px; }
+.num { padding: 18px 16px; border-radius: var(--r-md); background: var(--white); border: 1px solid var(--line); }
+.num b { display:block; font-size: 26px; letter-spacing:-.03em; font-weight:600; }
+.num span { font-size: 13px; color: var(--ink-3); }
+@media (max-width: 560px) { .numbers { grid-template-columns: 1fr; } .num { display:flex; align-items:baseline; gap:10px; } }
+.cases { display:grid; gap: 12px; margin-top: 26px; }
+.case { padding: 20px 22px; border:1px solid var(--line); border-radius: var(--r-md); background: var(--white); }
+.case .ind { font-size:11.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-4); }
+.case h3 { font-size:16px; font-weight:600; letter-spacing:-.01em; margin-top:5px; }
+.case p { font-size:14.5px; color:var(--ink-2); margin-top:6px; max-width: 64ch; }
+.case p b { color:var(--black); font-weight:600; }
+.people { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 30px; }
 .person { display:flex; gap: 14px; align-items:center; padding: 16px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--white); }
 .person img { width: 56px; height:56px; border-radius: 50%; object-fit: cover; }
 .person b { display:block; font-weight:600; font-size:15px; }
@@ -156,9 +201,6 @@ footer { border-top:1px solid var(--line); padding: 22px 0 34px; font-size: 13px
 footer .in { display:flex; justify-content:space-between; gap: 12px; flex-wrap:wrap; max-width:1040px; margin:0 auto; padding:0 22px; }
 footer a { color: var(--ink-3); text-decoration:none; }
 
-/* text-only fallback while a video is missing */
-.nov { margin-top: 22px; padding: 20px 22px; border-radius: var(--r-md); background: var(--bg-2); font-size: 15px; color: var(--ink-2); }
-.nov b { color: var(--black); font-weight:600; }
 [hidden] { display:none !important; }
 .reveal { opacity:0; transform: translateY(10px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .reveal.in { opacity:1; transform:none; }
@@ -178,17 +220,19 @@ footer a { color: var(--ink-3); text-decoration:none; }
 
 <main>
 
-<!-- ═══════════════ 1. KÖSZÖNTŐ ═══════════════ -->
+<!-- ═══════════════ 1. KÖSZÖNTŐ: videó legfelül ═══════════════ -->
 <header class="hero">
   <div class="wrap">
+    <div class="progress" aria-hidden="true">
+      <div class="lbl"><span>Időpont lefoglalva</span><b>Már csak a felkészülés van hátra</b></div>
+      <div class="bar"><i></i></div>
+    </div>
     <div class="eyebrow"><span class="chk"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Az időpont lefoglalva</div>
     <h1 id="h1">Szia<span id="h1name"></span>, <span id="h1when">hamarosan beszélünk</span>.</h1>
-    <p class="lead">Ez az oldal <b>öt perc olvasás</b>, plusz egy rövid videó, ha van rá időd. Arra való, hogy a hívás ne az ismerkedéssel menjen el, hanem azzal, ami nálatok ma a legtöbb munkát viszi.</p>
+    <p class="lead">Ezen az oldalon minden ott van, ami a hívás előtt kell: <b>egy rövid köszöntő, a fő videó arról, hogyan működik, amit építünk, és egy öt tételes lista</b>. Aki ezt végigviszi, annál a hívás nem az ismerkedéssel megy el, hanem azzal, ami nála a legtöbb munkát viszi.</p>
 
     <div id="v-thankyou" data-video="thankyou"></div>
-    <div class="nov" id="nov-thankyou">
-      <b>Köszönöm, hogy időt szántál rá.</b> A hívás előtt átnézem, amit a foglaláskor írtál, és arra készülök. Nem általános bemutató lesz, hanem arról beszélünk, ami nálatok történik.
-    </div>
+    <p class="video-note">Gábor köszöntője: mi fog történni a híváson, és mit kérek tőled addig.</p>
 
     <div class="when" id="whenCard">
       <div>
@@ -202,33 +246,45 @@ footer a { color: var(--ink-3); text-decoration:none; }
         <a class="btn ghost sm" id="btnResched" href="https://cal.com/automating.hu/30-perces-hivas" target="_blank" rel="noopener">Másik időpont</a>
       </div>
     </div>
+
+    <div class="calltri reveal">
+      <div class="c"><i>1 · kb. 12 perc</i><b>Először én kérdezek</b><p>Mi történik nálatok egy megkereséssel, amíg pénz lesz belőle.</p></div>
+      <div class="c"><i>2 · kb. 8 perc</i><b>Utána megmutatom</b><p>Működő rendszereket, és azt, hogy nálatok mi lenne belőlük.</p></div>
+      <div class="c"><i>3 · kb. 10 perc</i><b>A végén számokban</b><p>Mit hozna óra és forint szinten, és mennyibe kerül. A szám a tiéd marad.</p></div>
+    </div>
+    <div class="callout reveal">A hívás végén szeretném, ha lenne egy <b>igen vagy egy nem</b>. A „majd meggondoljuk"-ból ritkán lesz döntés, és a te idődet is jobban tisztelem ennél. Ha nem passzolunk, azt is kimondom. A hívást én vezetem, semmit nem kell előkészítened azon túl, ami lent a listán van.</div>
   </div>
 </header>
 
-<!-- ═══════════════ 2. ÍGY FOG KINÉZNI ═══════════════ -->
-<section>
-  <div class="wrap">
-    <div class="k">A hívás</div>
-    <h2>Így fog kinézni a harminc perc.</h2>
-    <p class="sub">Nem prezentáció. Három rész, és a végén egy egyértelmű válasz, bármelyik irányba.</p>
-    <div class="steps">
-      <div class="step reveal"><div class="n">1</div><div><h3>Először én kérdezek<span class="m">kb. 12 perc</span></h3><p>Végigvesszük, mi történik egy megkereséssel a beérkezésétől addig, amíg pénz lesz belőle. Melyik lépés viszi az időt, hányan csinálják, mennyibe kerül. Enélkül csak találgatnék.</p></div></div>
-      <div class="step reveal"><div class="n">2</div><div><h3>Utána megmutatom<span class="m">kb. 8 perc</span></h3><p>Mi az ebből, amit ma meg lehet oldani. Nem prezentációt mutatok, hanem működő rendszereket, és azt, hogy nálatok mi lenne belőle.</p></div></div>
-      <div class="step reveal"><div class="n">3</div><div><h3>A végén számokban<span class="m">kb. 10 perc</span></h3><p>Elmondom, mit hozna ez nektek óra és forint szinten, és hogy mennyibe kerül. Ez a szám akkor is a tiéd marad, ha nem dolgozunk együtt.</p></div></div>
-    </div>
-    <div class="callout reveal">A hívás végén szeretném, ha lenne egy <b>igen vagy egy nem</b>. A „majd meggondoljuk"-ból ritkán lesz döntés, és a te idődet is jobban tisztelem ennél. Ha nem passzolunk, azt is kimondom.</div>
-    <p class="sub" style="margin-top:14px">A hívást én vezetem. Semmit nem kell előkészítened azon túl, ami lent a listán van.</p>
-  </div>
-</section>
-
-<!-- ═══════════════ 3. MECHANIZMUS ═══════════════ -->
+<!-- ═══════════════ 2. FŐ VIDEÓ: A MECHANIZMUS ═══════════════ -->
 <section class="soft">
   <div class="wrap">
-    <div class="k">Hogyan működik</div>
-    <h2>Nem szoftvert adunk, amit meg kell tanulni.</h2>
-    <p class="sub">Hanem egy réteget, ami elvégzi a napi ismétlődő munkát: felveszi a telefont, olvassa és válaszolja a leveleket, rögzíti a számlákat. Ez a videó végigviszi, hogyan épül fel, és mi a te dolgod benne.</p>
+    <div class="k">Nézd meg a hívás előtt</div>
+    <h2>Hogyan veszi át egy AI-alkalmazott a napi ismétlődő munkát.</h2>
+    <p class="sub">Ez a legfontosabb videó az oldalon. Lépésről lépésre végigviszi, mi az, amit építünk, mi nem az, hogyan épül fel nálatok, és mi a te dolgod benne. Ha ezt megnézed, a híváson nem ezt kell elmagyaráznom, és az idő a ti folyamatotokra megy.</p>
 
     <div id="v-vsl" data-video="vsl"></div>
+    <div class="chapters" aria-label="A videó fejezetei">
+      <span><b>0:00</b>A rosszul feltett kérdés</span>
+      <span><b>0:45</b>Mi nem ez</span>
+      <span><b>1:30</b>Mi ez</span>
+      <span><b>3:00</b>Hogyan épül fel</span>
+      <span><b>5:00</b>Mi a ti dolgotok</span>
+      <span><b>5:45</b>Honnan tudjuk, hogy működik</span>
+      <span><b>6:30</b>A hívás</span>
+    </div>
+
+    <details class="readtoggle" id="readVsl">
+      <summary>Inkább elolvasnád? Itt a videó tartalma szövegben.</summary>
+      <div class="in">
+        <p><b>A rosszul feltett kérdés.</b> Nem az a kérdés, hogy meg tudjátok-e csinálni kézzel. Persze, hogy meg. A kérdés az, hogy mennyibe kerül, hogy még mindig kézzel csináljátok: a telefon, amit nem vesz fel senki, a postaláda, ami reggel nyolcvan levéllel indul, a számlák, amiket valaki kedd délután bepötyög.</p>
+        <p><b>Mi nem ez.</b> Nem szoftver, amit meg kell tanulni. Nem kurzus, ahol a végén neked kell megcsinálnod. És nem chatbot a weboldal sarkában.</p>
+        <p><b>Mi ez.</b> Egy réteg a céged és a napi ismétlődő munka között, mint egy alkalmazott, aki egy konkrét munkakört vesz át: felveszi a telefont az első csengésre, olvassa és válaszolja a leveleket, a beérkező számlát rögzíti abba a rendszerbe, amit ma is használtok. Egy konkrét munkakör, egy konkrét fájdalom, nem „digitalizáljuk a céget".</p>
+        <p><b>Hogyan épül fel.</b> Öt lépés: feltárás (ez a hívásunk) · a hívás végén konkrét szám, ami akkor is a tiéd marad, ha nem dolgozunk együtt · megépítés a ti folyamatotokra, emberi jóváhagyási kapukkal ott, ahol kéritek (egy fókuszált megoldás jellemzően egy-két hét, egy több rendszert összekötő integráció két-négy hét) · átadás, a díj fele a megállapodáskor, fele ekkor · üzemeltetés: a megépítés a munka húsz százaléka, a fenntartás a nyolcvan, ezt mi visszük, és havonta egy oldalon leírjuk, mit csinált.</p>
+        <p><b>Mi a ti dolgotok.</b> Három dolog, egyik sem technikai: egy ember, aki válaszol, ha kérdezünk · hozzáférés a pár rendszerhez, amiben ma a munka folyik · az első hetekben egy kattintás ott, ahol jóváhagyás kell.</p>
+        <p><b>A hívás.</b> Harminc perc, három rész, a végén szám. És a végén egy igen vagy egy nem, bármelyik irányba.</p>
+      </div>
+    </details>
 
     <div class="mech">
       <div class="c reveal"><h3>AI-alkalmazott, nem eszköz</h3><p>Egy konkrét munkakört vesz át: a recepciós telefonját, az ügyfélszolgálat postaládáját, a számlák rögzítését. Nem neked kell kezelned, ő dolgozik.</p></div>
@@ -236,113 +292,150 @@ footer a { color: var(--ink-3); text-decoration:none; }
       <div class="c reveal"><h3>Mi építjük, mi üzemeltetjük</h3><p>A díj fele a megállapodáskor, fele átadáskor. Utána havi üzemeltetés: figyeljük, javítjuk, követjük a változásokat, és havonta egy oldalon leírjuk, mit csinált.</p></div>
       <div class="c reveal"><h3>A ti folyamatotokra épül</h3><p>Nincs sablon. A hívás első része pont azért van, hogy azt építsük meg, ami nálatok fáj, és ne azt, ami egy bemutatóban jól mutat.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. A TE TERÜLETED ═══════════════ -->
+<section>
+  <div class="wrap">
+    <div class="k">A te területed</div>
+    <h2>Ami nálatok a legtöbb időt viszi.</h2>
+    <p class="sub">A foglaláskor bejelölted, mi rabolja az időtöket. A hívást innen indítjuk, ezért ez a rész előre került neked.</p>
+    <div class="areas" id="areas">
+      <div class="area reveal" data-key="hivasok">
+        <div class="top-line"><h3>Hívások</h3><span class="rec" hidden>te jelölted</span></div>
+        <div class="hook">Ha valaki hív és nem veszi fel senki, az nem elmaradt hívás. Az elmaradt megrendelés.</div>
+        <p>A hang-asszisztens felveszi a telefont az első csengésre, este és hétvégén is. Válaszol a visszatérő kérdésekre, időpontot ad, a fontos hívást pedig átadja egy embernek, összefoglalóval. Reggel nyolckor nincs lemaradt hívás az éjszakáról, a visszahívandók listája készen vár.</p>
+        <div class="ask"><b>A híváson ezt kérdezem:</b> hány hívás jön naponta, mennyi marad lemaradva, mit ér egy megrendelés.</div>
+      </div>
+      <div class="area reveal" data-key="emailek">
+        <div class="top-line"><h3>E-mailek</h3><span class="rec" hidden>te jelölted</span></div>
+        <div class="hook">„Hol van a csomagom?" Ezt ne ember válaszolja meg.</div>
+        <p>Az e-mail operátor olvassa a bejövő leveleket, a visszatérőket megválaszolja, a többihez választ készít elő, amit egy kattintással jóváhagytok. Ami sürgős, azt azonnal jelzi. A postaláda reggel nem nulláról indul, a válaszok a jóváhagyásra várnak.</p>
+        <div class="ask"><b>A híváson ezt kérdezem:</b> hány levél jön havonta, ki válaszol rájuk, mennyi idő megy el vele.</div>
+      </div>
+      <div class="area reveal" data-key="admin">
+        <div class="top-line"><h3>Admin és számlák</h3><span class="rec" hidden>te jelölted</span></div>
+        <div class="hook">Nem az a kérdés, hogy meg tudjátok-e csinálni kézzel. Hanem hogy mennyibe kerül, hogy még mindig kézzel csináljátok.</div>
+        <p>A dokumentum-operátor a beérkező számlákat, rendeléseket, űrlapokat kiolvassa és rögzíti abba a rendszerbe, amit ma is használtok. Ami nem egyértelmű, azt félreteszi egy embernek. Reggelre a tegnapi számlák rögzítve, csak a kivételek várnak rád.</p>
+        <div class="ask"><b>A híváson ezt kérdezem:</b> hány dokumentum havonta, hová kerül, hány kéz nyúl hozzá.</div>
+      </div>
+      <div class="area reveal" data-key="idopont">
+        <div class="top-line"><h3>Időpont-egyeztetés</h3><span class="rec" hidden>te jelölted</span></div>
+        <div class="hook">Az időpont-egyeztetés nem munka. Csak úgy néz ki.</div>
+        <p>Az asszisztens telefonon, e-mailben vagy chaten egyezteti és megerősíti az időpontokat, emlékeztet, és átrakja, ha kell. A naptár magától telik, nem oda-vissza levelezésből, és nem marad üres idősáv egy lemondás miatt.</p>
+        <div class="ask"><b>A híváson ezt kérdezem:</b> hány egyeztetés hetente, hány érintés egy időpont, mennyi a lemorzsolódás.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. CHECKLIST ═══════════════ -->
+<section class="soft" id="felkeszules">
+  <div class="wrap">
+    <div class="checkhead">
+      <div>
+        <div class="k">Felkészülés</div>
+        <h2>Vidd végig ezt a rövid listát.</h2>
+      </div>
+      <div class="ring" id="ring"><i id="ringTxt">0/5</i></div>
+    </div>
+    <p class="sub">Öt tétel, öt perc. Nem kell pontos szám, egy becslés is elég: ezekkel számolunk a hívás végén, és aki ezt megcsinálja, annál a hívás a közepén kezdődik.</p>
+
+    <div class="steps-wrap" id="check">
+      <div class="steps">
+        <label class="step"><input type="checkbox" data-step="email"><div><div class="kk">1. lépés</div><h3>Nézd meg a visszaigazoló e-mailt</h3><p>Ott van a pontos időpont és a Google Meet link. Ha nem látod, nézd meg a spam mappát is, vagy írj: <a href="mailto:gabor@automating.hu">gabor@automating.hu</a>.</p><div class="act"><button class="btn ghost sm" id="btnCalStep" type="button" hidden>Naptárba teszem</button></div></div></label>
+        <label class="step"><input type="checkbox" data-step="folyamat"><div><div class="kk">2. lépés</div><h3>Írd fel az egy folyamatot, ami ma a legtöbb időt viszi</h3><p>Ki csinálja, és mi indítja el. Ha több is van, a legfájóbb. A hívás első fele erről fog szólni.</p></div></label>
+        <label class="step"><input type="checkbox" data-step="orak"><div><div class="kk">3. lépés</div><h3>Két szám: havi óra és egy munkaóra költsége</h3><p>Ahányan csinálják, szorozva a heti óráikkal, szorozva néggyel. Az órabérhez: havi bruttó bér osztva 160-nal, plusz a munkáltatói járulék. Ha nem tudod, a híváson kiszámoljuk, de ezzel a két számmal mondom meg a végén, mennyit ér az, amiről beszélünk.</p></div></label>
+        <label class="step"><input type="checkbox" data-step="donteshozo"><div><div class="kk">4. lépés</div><h3>Ha nem egyedül döntesz: hívd meg a másik döntéshozót</h3><p>Nem azért, hogy nyomás legyen, hanem mert amit elmondok, azt jobb, ha nem neked kell utána elmesélned helyettem.</p><div class="act"><button class="btn ghost sm" type="button" id="btnInvite">Meghívó szöveg másolása</button></div></div></label>
+        <label class="step"><input type="checkbox" data-step="laptop"><div><div class="kk">5. lépés</div><h3>Laptopról, csendes helyről csatlakozz</h3><p>Képernyőt osztok, és telefonon a részletek elvesznek.</p></div></label>
+      </div>
+      <div class="done-note">Kész. Ennyi elég, a többit a híváson rakjuk össze. Találkozunk <b id="doneWhen">a híváson</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. KIFOGÁS-VIDEÓK ═══════════════ -->
+<section>
+  <div class="wrap">
+    <div class="k">Amit a hívás előtt kérdezni szoktak</div>
+    <h2>Őszinte válaszok, mielőtt beszélünk.</h2>
+    <p class="sub">Ezeket a kérdéseket szinte minden hívás előtt megkapom. Mindegyikre itt a válasz, videóban és szövegben, hogy a híváson már ne ezekre menjen az idő.</p>
+
+    <div class="qa" data-q="ingyenes">
+      <h3>Ha ingyenes a hívás, mennyire alapos?</h3>
+      <div id="v-b-ingyenes" data-video="breakouts.ingyenes"></div>
+      <div class="a after-video">Nem azért ingyenes, mert nem ér semmit, hanem mert enélkül nem tudnék felelősen árat mondani. A hívás végére kapsz egy konkrét számot arról, mennyi időt és pénzt visz el ma az a folyamat, amiről beszélünk. Ez akkor is a tiéd marad, ha nem dolgozunk együtt.</div>
+    </div>
+
+    <div class="qa" data-q="ar">
+      <h3>Mennyibe kerül?</h3>
+      <div id="v-b-ar" data-video="breakouts.ar"></div>
+      <div class="a after-video">Nincs árlistánk, mert nem ugyanazt építjük mindenkinek. A hívás végén pontos számot mondok, nem sávot, és mellé azt is, hogy mit hoz. A díj fele a megállapodáskor, fele átadáskor. A havi üzemeltetés nem előfizetés, hanem a gép üzemanyaga: a futtatás költsége és a felügyelet.</div>
+    </div>
+
+    <div class="qa" data-q="adat">
+      <h3>Mi lesz a céges adatainkkal?</h3>
+      <div id="v-b-adat" data-video="breakouts.adat"></div>
+      <div class="a after-video">Az adat nálatok marad, a rendszer a ti fiókjaitokban és rendszereitekben dolgozik. Ami kifelé menne, az ott áll meg, ahol ti kéritek: emberi jóváhagyásnál. A híváson konkrétan végigvesszük, mihez kell hozzáférés, mihez nem, és melyik lépésnél hagy el adat a ti rendszereiteket. Ha kéritek, titoktartási megállapodást írunk alá a hívás előtt.</div>
+    </div>
+
+    <div class="qa" data-q="belsos">
+      <h3>Nem tudnánk ezt belsősen megcsinálni?</h3>
+      <div id="v-b-belsos" data-video="breakouts.belsos"></div>
+      <div class="a after-video">Lehet, hogy igen. A megépítés a munka húsz százaléka, a fenntartás a nyolcvan: a modellek változnak, az integrációk elromlanak, csütörtök reggel valakinek meg kell javítania. Mi ezt vállaljuk. Ha a belső út az észszerűbb, azt a híváson kimondom.</div>
+    </div>
+
+    <div class="qa" data-q="nem">
+      <h3>Mi van, ha a végén azt mondom, nem?</h3>
+      <div id="v-b-nem" data-video="breakouts.nem"></div>
+      <div class="a after-video">Akkor nem. Nem foglak keresni, és a szám, amit kiszámoltunk, a tiéd marad. Egy kérésem van: a híváson mondd ki, ne utána gondold át. A te idődet is jobban tisztelem ennél.</div>
+    </div>
+
+    <div class="faq" id="faq">
+      <details data-q="ido"><summary>Mennyi idő alatt készül el?</summary><div class="a">Egy fókuszált megoldás jellemzően egy-két hét, egy több rendszert összekötő integráció két-négy hét. A híváson ütemtervet mondok, nem becslést.</div></details>
+      <details data-q="nemvallal"><summary>Mit nem vállaltok?</summary><div class="a">Nem vállalunk általános „digitalizáljuk a céget" projektet: egy konkrét folyamatot veszünk le, aminek van mérhető óraszáma. Nem mondunk árat a feltárás előtt, mert az csak találgatás lenne. És nem építünk olyat, amit ti nem tudtok jóváhagyni: ha egy lépésnél nem akartok emberi kaput, azt kimondjuk, és eldöntjük együtt.</div></details>
+      <details data-q="ertek"><summary>Nem értek a technológiához. Baj?</summary><div class="a">Nem. Nem kell megtanulni semmit, és a híváson sem technológiáról beszélünk, hanem arról, hogy mi lesz másképp reggel nyolckor. A részleteket mi visszük.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 6. PROOF ═══════════════ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="k">Bizonyíték</div>
+    <h2>Mi történik ott, ahol ez már fut.</h2>
+    <p class="sub">Ügyfélneveket engedély nélkül nem mondunk, ezért itt azt mutatjuk, amit vállalni tudunk: a számainkat, egy élő rendszert működés közben, és névtelen esettanulmányokat.</p>
 
     <div class="numbers reveal">
       <div class="num"><b>30+</b><span>rendszert építettünk meg eddig</span></div>
       <div class="num"><b>11</b><span>fut ma is élesben ügyfeleknél</span></div>
       <div class="num"><b>59,4M Ft</b><span>értékben leszállított munka</span></div>
     </div>
-  </div>
-</section>
 
-<!-- ═══════════════ 4. BREAKOUT ═══════════════ -->
-<section>
-  <div class="wrap">
-    <div class="k">A te területed</div>
-    <h2>Ami nálatok a legtöbb időt viszi.</h2>
-    <p class="sub">A foglaláskor bejelölted, mi rabolja az időtöket. Itt az a rész, ami rád vonatkozik, és a hívást is innen indítjuk.</p>
+    <div id="v-proof" data-video="proof"></div>
+    <p class="video-note">Egy élő rendszer működés közben, fél percben, ügyfélnév nélkül.</p>
 
-    <div class="tabs" role="tablist" id="tabs">
-      <button class="tab" role="tab" data-key="hivasok">Hívások<span class="rec" hidden>te jelölted</span></button>
-      <button class="tab" role="tab" data-key="emailek">E-mailek<span class="rec" hidden>te jelölted</span></button>
-      <button class="tab" role="tab" data-key="admin">Admin és számlák<span class="rec" hidden>te jelölted</span></button>
-      <button class="tab" role="tab" data-key="idopont">Időpont-egyeztetés<span class="rec" hidden>te jelölted</span></button>
+    <div class="cases">
+      <div class="case reveal"><div class="ind">Vendéglátás · hang</div><h3>Pizzázólánc, ahol a csúcsestéken csörgött ki a telefon</h3><p>A rendelések léteztek, de péntek este senki nem tudta felvenni a hívást. <b>Most minden hívást másodperceken belül fogad az AI hang-ügynök</b>, a rendelés a konyhai rendszerbe megy, és a telefon nem szűk keresztmetszet többé.</p></div>
+      <div class="case reveal"><div class="ind">Logisztika · dokumentumok</div><h3>Import-forgalmazó, ahol két munkakör csak gépelt</h3><p>Több száz számla és vámpapír érkezett havonta, mindet kézzel rögzítették. <b>Most a dokumentum-operátor olvassa és rögzíti őket az ERP-be</b>, a kétséges eseteket embernek jelöli, és a hó végi zárás tiszta.</p></div>
+      <div class="case reveal"><div class="ind">Egészségügy · hang</div><h3>Magánklinika, ahol a recepció öt dolgot csinált egyszerre</h3><p>Este öt után a vonal elnémult, az érdeklődők más klinikához kerültek. <b>Most éjjel-nappal minden hívást fogad az asszisztens</b>, a naptárból foglal, és az esti foglalások olyan bevételt hoznak, ami korábban nem létezett.</p></div>
     </div>
 
-    <div class="panel" data-key="hivasok">
-      <div class="hook">Ha valaki hív és nem veszi fel senki, az nem elmaradt hívás. Az elmaradt megrendelés.</div>
-      <div class="body">A hang-asszisztens felveszi a telefont az első csengésre, nap mint nap, este és hétvégén is. Válaszol a visszatérő kérdésekre, időpontot ad, a fontos hívást pedig átadja egy embernek, összefoglalóval.</div>
-      <ul><li>Mi lesz másképp reggel nyolckor: nincs lemaradt hívás az éjszakáról, a visszahívandók listája készen vár.</li><li>A híváson ezt kérdezem: hány hívás jön naponta, mennyi marad lemaradva, mit ér egy megrendelés.</li></ul>
-      <div data-video="breakouts.hivasok"></div>
+    <div class="acts" style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap">
+      <a class="btn ghost sm" href="/case-studies" target="_blank" rel="noopener" data-track="proof_open" data-step="case-studies">Mind a hat esettanulmány</a>
+      <a class="btn ghost sm" href="/#demo" target="_blank" rel="noopener" data-track="proof_open" data-step="demo">Élő demó a weboldalon</a>
     </div>
-    <div class="panel" data-key="emailek">
-      <div class="hook">„Hol van a csomagom?" Ezt ne ember válaszolja meg.</div>
-      <div class="body">Az e-mail operátor olvassa a bejövő leveleket, a visszatérőket megválaszolja, a többihez választ készít elő, amit egy kattintással jóváhagytok. Ami sürgős, azt azonnal jelzi.</div>
-      <ul><li>Ami változik: a postaláda reggel nem nulláról indul, a válaszok a jóváhagyásra várnak.</li><li>A híváson ezt kérdezem: hány levél jön havonta, ki válaszol rájuk, mennyi idő megy el vele.</li></ul>
-      <div data-video="breakouts.emailek"></div>
-    </div>
-    <div class="panel" data-key="admin">
-      <div class="hook">Nem az a kérdés, hogy meg tudjátok-e csinálni kézzel. Hanem hogy mennyibe kerül, hogy még mindig kézzel csináljátok.</div>
-      <div class="body">A dokumentum-operátor a beérkező számlákat, rendeléseket, űrlapokat kiolvassa és rögzíti abba a rendszerbe, amit ma is használtok. Ami nem egyértelmű, azt félreteszi egy embernek.</div>
-      <ul><li>Mi lesz másképp reggel nyolckor: a tegnapi számlák rögzítve, csak a kivételek várnak rád.</li><li>A híváson ezt kérdezem: hány dokumentum havonta, hová kerül, hány kéz nyúl hozzá.</li></ul>
-      <div data-video="breakouts.admin"></div>
-    </div>
-    <div class="panel" data-key="idopont">
-      <div class="hook">Az időpont-egyeztetés nem munka. Csak úgy néz ki.</div>
-      <div class="body">Az asszisztens telefonon, e-mailben vagy chaten egyezteti és megerősíti az időpontokat, emlékeztet, és átrakja, ha kell. A naptár magától telik, nem oda-vissza levelezésből.</div>
-      <ul><li>Ami változik: a mai nap be van töltve, az emlékeztetők kimentek, nem marad üres idősáv egy lemondás miatt.</li><li>A híváson ezt kérdezem: hány egyeztetés hetente, hány érintés egy időpont, mennyi a lemorzsolódás.</li></ul>
-      <div data-video="breakouts.idopont"></div>
-    </div>
-  </div>
-</section>
 
-<!-- ═══════════════ 5. CHECKLIST ═══════════════ -->
-<section class="soft" id="felkeszules">
-  <div class="wrap">
-    <div class="k">Felkészülés</div>
-    <h2>Öt perc, és a hívás a közepén kezdődik.</h2>
-    <p class="sub">Nem kell pontos szám, egy becslés is elég. Ezekkel számolunk a hívás végén.</p>
-
-    <div class="check" id="check">
-      <div class="head"><div class="t">Hívás előtti lista</div><div class="ring" id="ring"><i id="ringTxt">0/5</i></div></div>
-
-      <label class="item"><input type="checkbox" data-step="folyamat"><div><div class="l">Az az egy folyamat, ami ma a legtöbb időt viszi</div><div class="h">Ki csinálja, és mi indítja el. Ha több is van, a legfájóbb.</div></div></label>
-      <label class="item"><input type="checkbox" data-step="orak"><div><div class="l">Nagyjából hány óra ez havonta, összesen</div><div class="h">Ahányan csinálják, szorozva a heti óráikkal, szorozva néggyel. Becslés is jó.</div></div></label>
-      <label class="item"><input type="checkbox" data-step="oradij"><div><div class="l">Mennyibe kerül nálatok egy munkaóra, járulékokkal együtt</div><div class="h">Ezzel a számmal mondom meg a hívás végén, mennyit ér az, amiről beszélünk. Ha nincs kéznél: havi bruttó bér osztva 160-nal, és még hozzá a munkáltatói járulék. Ha ezt sem tudod, a híváson kiszámoljuk.</div></div></label>
-      <label class="item"><input type="checkbox" data-step="donteshozo"><div><div class="l">Ha nem egyedül döntesz: legyen ott a másik döntéshozó is</div><div class="h">Nem azért, hogy nyomás legyen, hanem mert amit elmondok, azt jobb, ha nem neked kell utána elmesélned helyettem.</div><div class="act"><button class="btn ghost sm" type="button" id="btnInvite">Meghívó szöveg másolása</button></div></div></label>
-      <label class="item"><input type="checkbox" data-step="laptop"><div><div class="l">Laptopról csatlakozz, ha tudsz</div><div class="h">Képernyőt osztok, és telefonon a részletek elvesznek.</div></div></label>
-
-      <div class="done-note">Kész. Ennyi elég, a többit a híváson rakjuk össze. Találkozunk <b id="doneWhen"></b>.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ 6. FAQ ═══════════════ -->
-<section>
-  <div class="wrap">
-    <div class="k">Amit a hívás előtt kérdezni szoktak</div>
-    <h2>Őszinte válaszok, mielőtt beszélünk.</h2>
-    <div class="faq" id="faq">
-      <details data-q="ingyenes"><summary>Ha ingyenes, mennyire alapos?</summary><div class="a">Nem azért ingyenes, mert nem ér semmit, hanem mert enélkül nem tudnék felelősen árat mondani. A hívás végére kapsz egy konkrét számot arról, mennyi időt és pénzt visz el ma az a folyamat, amiről beszélünk. Ez akkor is a tiéd marad, ha nem dolgozunk együtt.</div></details>
-      <details data-q="ar"><summary>Mennyibe kerül?</summary><div class="a">Nincs árlistánk, mert nem ugyanazt építjük mindenkinek. A hívás végén pontos számot mondok, nem sávot, és mellé azt is, hogy mit hoz. A díj fele a megállapodáskor, fele átadáskor. A havi üzemeltetés nem előfizetés, hanem a gép üzemanyaga: a futtatás költsége és a felügyelet.</div></details>
-      <details data-q="ido"><summary>Mennyi idő alatt készül el?</summary><div class="a">Egy fókuszált megoldás jellemzően egy-két hét, egy több rendszert összekötő integráció két-négy hét. A híváson ütemtervet mondok, nem becslést.</div></details>
-      <details data-q="adat"><summary>Mi lesz a céges adatainkkal?</summary><div class="a">Az adat nálatok marad, a rendszer a ti fiókjaitokban és rendszereitekben dolgozik. Ami kifelé menne, az ott áll meg, ahol ti kéritek: emberi jóváhagyásnál. A híváson konkrétan végigvesszük, mihez kell hozzáférés, mihez nem, és melyik lépésnél hagy el adat a ti rendszereiteket. Ha kéritek, titoktartási megállapodást írunk alá a hívás előtt.</div></details>
-      <details data-q="nemvallal"><summary>Mit nem vállaltok?</summary><div class="a">Nem vállalunk általános „digitalizáljuk a céget" projektet: egy konkrét folyamatot veszünk le, aminek van mérhető óraszáma. Nem mondunk árat a feltárás előtt, mert az csak találgatás lenne. És nem építünk olyat, amit ti nem tudtok jóváhagyni: ha egy lépésnél nem akartok emberi kaput, azt kimondjuk, és eldöntjük együtt.</div></details>
-      <details data-q="belsos"><summary>Nem tudnánk ezt belsősen megcsinálni?</summary><div class="a">Lehet, hogy igen. A megépítés a munka húsz százaléka, a fenntartás a nyolcvan: a modellek változnak, az integrációk elromlanak, csütörtök reggel valakinek meg kell javítania. Mi ezt vállaljuk. Ha a belső út az észszerűbb, azt a híváson kimondom.</div></details>
-      <details data-q="ertek"><summary>Nem értek a technológiához. Baj?</summary><div class="a">Nem. Nem kell megtanulni semmit, és a híváson sem technológiáról beszélünk, hanem arról, hogy mi lesz másképp reggel nyolckor. A részleteket mi visszük.</div></details>
-      <details data-q="nem"><summary>Mi van, ha a végén azt mondom, nem?</summary><div class="a">Akkor nem. Nem foglak keresni, és a szám, amit kiszámoltunk, a tiéd marad. Egy kérésem van: a híváson mondd ki, ne utána gondold át. A te idődet is jobban tisztelem ennél.</div></details>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ 7. KIK VAGYUNK ═══════════════ -->
-<section class="soft">
-  <div class="wrap">
-    <div class="k">Kivel fogsz beszélni</div>
-    <h2>Két alapító. És a saját AI-csapatunk.</h2>
     <div class="people">
       <div class="person reveal"><img src="/assets/team-homoki-gabor.webp" alt="Homoki Gábor"><div><b>Homoki Gábor</b><span>társalapító, ő vezeti a hívást</span></div></div>
       <div class="person reveal"><img src="/assets/team-hudacsek-bence.webp" alt="Hudácsek Bence"><div><b>Hudácsek Bence</b><span>társalapító, ő építi a rendszereket</span></div></div>
     </div>
     <p class="team-note">Amit eladunk, azt magunknak is megépítettük: a cégünk napi működését öt AI-munkatárs viszi, a reggeli jelentéstől a pénzügyi zárásig. Ezért tudjuk pontosan, mi működik a gyakorlatban, és mi csak a bemutatóban.</p>
-    <div class="acts" style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap">
-      <a class="btn ghost sm" href="/case-studies" target="_blank" rel="noopener" data-track="proof_open" data-step="case-studies">Esettanulmányok</a>
-      <a class="btn ghost sm" href="/#demo" target="_blank" rel="noopener" data-track="proof_open" data-step="demo">Élő demó a weboldalon</a>
-    </div>
   </div>
 </section>
 
-<!-- ═══════════════ 8. ZÁRÁS ═══════════════ -->
+<!-- ═══════════════ 7. ZÁRÁS ═══════════════ -->
 <section class="final">
   <div class="wrap">
     <div class="k">Találkozunk</div>
@@ -364,7 +457,8 @@ footer a { color: var(--ink-3); text-decoration:none; }
 (function () {
   'use strict';
   /* ───────── paraméterek: n = keresztnév, t = ISO kezdés, u = cal.com uid,
-     p = időrablók (vesszővel: hivasok,emailek,admin,idopont), d = döntéshozó (1/2/3) ───────── */
+     p = időrablók (vesszővel: hivasok,emailek,admin,idopont), d = döntéshozó (1/2/3),
+     m = Meet-link ───────── */
   var q = new URLSearchParams(location.search);
   var clean = function (s, n) { return (s || '').replace(/[<>"'&]/g, '').trim().slice(0, n); };
   /* cal.com "Redirect on booking" + "Forward parameters" esetén a cal.com saját nevei
@@ -383,7 +477,7 @@ footer a { color: var(--ink-3); text-decoration:none; }
   /* ───────── mérés: saját D1-napló (PII nélkül) + GA4, ha van consent ───────── */
   function track(event, step, detail) {
     try {
-      var body = JSON.stringify({ event: event, uid: uid || null, step: step || null, detail: detail || null, variant: 'v1' });
+      var body = JSON.stringify({ event: event, uid: uid || null, step: step || null, detail: detail || null, variant: 'v2' });
       if (navigator.sendBeacon) navigator.sendBeacon('/hivas/api/esemeny', new Blob([body], { type: 'application/json' }));
       else fetch('/hivas/api/esemeny', { method: 'POST', body: body, headers: { 'content-type': 'application/json' }, keepalive: true }).catch(function () {});
     } catch (e) {}
@@ -409,7 +503,7 @@ footer a { color: var(--ink-3); text-decoration:none; }
     $('finalH2').textContent = 'Találkozunk ' + whenStr + '-kor.';
     var days = Math.round((start - Date.now()) / 864e5);
     $('whenIn').textContent = days > 1 ? days + ' nap múlva' : days === 1 ? 'holnap' : days === 0 ? 'ma' : '';
-    $('btnCal').hidden = false; $('btnCal2').hidden = false;
+    $('btnCal').hidden = false; $('btnCal2').hidden = false; $('btnCalStep').hidden = false;
   }
   if (uid) {
     var r = 'https://cal.com/reschedule/' + encodeURIComponent(uid);
@@ -422,7 +516,7 @@ footer a { color: var(--ink-3); text-decoration:none; }
   if (meet) { $('btnMeet').href = meet; $('btnMeet').hidden = false; $('meetNote').textContent = 'Ugyanez a link a naptár-meghívóban is ott van. Egy nappal a hívás előtt emlékeztetőt is küldök.'; $('btnMeet').addEventListener('click', function () { track('cta_click', 'meet'); }); }
   [$('btnResched'), $('btnResched2')].forEach(function (b) { b.addEventListener('click', function () { track('reschedule'); }); });
 
-  /* ───────── naptár (.ics + Google) ───────── */
+  /* ───────── naptár (.ics) ───────── */
   function ics() {
     var end = new Date(start.getTime() + 30 * 6e4);
     var z = function (d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
@@ -430,15 +524,37 @@ footer a { color: var(--ink-3); text-decoration:none; }
       'DTSTAMP:' + z(new Date()), 'DTSTART:' + z(start), 'DTEND:' + z(end), 'SUMMARY:Hívás az Automatinggal', 'DESCRIPTION:Felkészülés: https://automating.hu/hivas' + (uid ? '?u=' + uid : ''), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     var a = document.createElement('a'); a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(s); a.download = 'automating-hivas.ics'; document.body.appendChild(a); a.click(); a.remove();
   }
-  [$('btnCal'), $('btnCal2')].forEach(function (b) { b.addEventListener('click', function () { track('calendar_add'); ics(); toast('Letöltve. Nyisd meg, és mentsd a naptáradba.'); }); });
+  [$('btnCal'), $('btnCal2'), $('btnCalStep')].forEach(function (b) { b.addEventListener('click', function (e) { e.preventDefault(); track('calendar_add'); ics(); toast('Letöltve. Nyisd meg, és mentsd a naptáradba.'); }); });
 
-  /* ───────── videók ───────── */
+  /* ───────── videók: kész forrás vagy "hamarosan" keret ───────── */
+  /* Amíg egy slot null az assets/hivas-videos.js-ben, a helyén a végleges méretű,
+     cím + hossz szerinti keret áll. Videó beérkezésekor magától lejátszóra vált. */
+  var SOON = {
+    'thankyou': { t: 'Köszönöm, hogy időt szántál rá. Így készülj a hívásra.', m: '1 perc' },
+    'vsl': { t: 'Hogyan veszi át egy AI-alkalmazott a napi ismétlődő munkát', m: '7 perc' },
+    'breakouts.ingyenes': { t: 'Ha ingyenes a hívás, mennyire alapos?', m: '2 perc' },
+    'breakouts.ar': { t: 'Mennyibe kerül?', m: '2 perc' },
+    'breakouts.adat': { t: 'Mi lesz a céges adatainkkal?', m: '2 perc' },
+    'breakouts.belsos': { t: 'Nem tudnánk ezt belsősen megcsinálni?', m: '2 perc' },
+    'breakouts.nem': { t: 'Mi van, ha a végén azt mondom, nem?', m: '2 perc' },
+    'proof': { t: 'Egy élő rendszer működés közben, fél percben', m: '30 mp' }
+  };
   function get(path) { return path.split('.').reduce(function (o, k) { return o && o[k]; }, VID); }
+  function soonFrame(key) {
+    var meta = SOON[key] || { t: 'Videó', m: '' };
+    var box = document.createElement('div'); box.className = 'video soon'; box.setAttribute('data-soon', key);
+    var inr = document.createElement('div'); inr.className = 'soon-in';
+    var img = document.createElement('img'); img.src = '/assets/team-homoki-gabor.webp'; img.alt = 'Homoki Gábor'; img.loading = 'lazy';
+    var who = document.createElement('div'); who.className = 'who'; who.textContent = 'Homoki Gábor · Automating';
+    var ttl = document.createElement('div'); ttl.className = 'ttl'; ttl.textContent = meta.t;
+    var st = document.createElement('div'); st.className = 'st'; st.innerHTML = '<i></i>Felvétel folyamatban · napokon belül itt lesz';
+    inr.appendChild(img); inr.appendChild(who); inr.appendChild(ttl); inr.appendChild(st); box.appendChild(inr);
+    if (meta.m) { var t = document.createElement('div'); t.className = 'tag'; t.textContent = meta.m; box.appendChild(t); }
+    return box;
+  }
   function mount(holder) {
     var key = holder.getAttribute('data-video'), src = get(key);
-    var nov = $('nov-' + key.replace('.', '-'));
-    if (!src) { holder.hidden = true; return; }
-    if (nov) nov.hidden = true;
+    if (!src) { holder.appendChild(soonFrame(key)); return; }
     var box = document.createElement('div'); box.className = 'video';
     var short = key.split('.').pop();
     if (src.mp4) {
@@ -477,22 +593,24 @@ footer a { color: var(--ink-3); text-decoration:none; }
   };
   Array.prototype.forEach.call(document.querySelectorAll('[data-video]'), mount);
 
-  /* ───────── breakout tabok: a foglaláskor jelölt időrabló az alapértelmezett ───────── */
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
-  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
-  function open(key, why) {
-    tabs.forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-key') === key ? 'true' : 'false'); });
-    panels.forEach(function (p) { if (p.getAttribute('data-key') === key) p.setAttribute('data-open', ''); else p.removeAttribute('data-open'); });
-    if (why === 'click') track('cta_click', 'breakout:' + key);
+  /* ───────── "inkább elolvasom" mérés ───────── */
+  $('readVsl').addEventListener('toggle', function () { if ($('readVsl').open) track('cta_click', 'vsl_text'); });
+
+  /* ───────── a te területed: a foglaláskor jelölt időrabló előre + címke ───────── */
+  var areasBox = $('areas');
+  var areas = Array.prototype.slice.call(areasBox.querySelectorAll('.area'));
+  var picked = probs.filter(function (p) { return areas.some(function (a) { return a.getAttribute('data-key') === p; }); });
+  if (picked.length) {
+    /* a jelöltek előre, sorrendben, címkével; a többi mögé kerül */
+    picked.slice().reverse().forEach(function (p) {
+      var el = areas.filter(function (a) { return a.getAttribute('data-key') === p; })[0];
+      el.querySelector('.rec').hidden = false;
+      areasBox.insertBefore(el, areasBox.firstChild);
+    });
   }
-  tabs.forEach(function (t) {
-    if (probs.indexOf(t.getAttribute('data-key')) > -1) t.querySelector('.rec').hidden = false;
-    t.addEventListener('click', function () { open(t.getAttribute('data-key'), 'click'); });
-  });
-  open(probs[0] && tabs.some(function (t) { return t.getAttribute('data-key') === probs[0]; }) ? probs[0] : 'hivasok');
 
   /* ───────── checklist, uid-hoz kötve, a böngészőben megmarad ───────── */
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('.item input'));
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.step input'));
   var storeKey = 'hivas-check:' + (uid || 'anon');
   var saved = {}; try { saved = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
   boxes.forEach(function (b) { b.checked = !!saved[b.getAttribute('data-step')]; });
@@ -506,6 +624,11 @@ footer a { color: var(--ink-3); text-decoration:none; }
   boxes.forEach(function (b) { b.addEventListener('change', function () { if (b.checked) track('checklist', b.getAttribute('data-step')); refresh(true); }); });
   refresh(false);
 
+  /* a lépés-kártyán belüli gombok kattintása ne kapcsolja a checkboxot */
+  Array.prototype.forEach.call(document.querySelectorAll('.step .act .btn, .step a'), function (el) {
+    el.addEventListener('click', function (e) { e.stopPropagation(); });
+  });
+
   /* ───────── döntéshozó-meghívó szöveg ───────── */
   $('btnInvite').addEventListener('click', function (e) {
     e.preventDefault();
@@ -515,7 +638,7 @@ footer a { color: var(--ink-3); text-decoration:none; }
     track('decision_maker');
   });
 
-  /* ───────── FAQ + proof mérés ───────── */
+  /* ───────── FAQ + proof mérés (a kifogás-videók a video_* eseményekkel mérve) ───────── */
   Array.prototype.forEach.call(document.querySelectorAll('#faq details'), function (d) { d.addEventListener('toggle', function () { if (d.open) track('faq_open', d.getAttribute('data-q')); }); });
   Array.prototype.forEach.call(document.querySelectorAll('[data-track]'), function (a) { a.addEventListener('click', function () { track(a.getAttribute('data-track'), a.getAttribute('data-step')); }); });
 

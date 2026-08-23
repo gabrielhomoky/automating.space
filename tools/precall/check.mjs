@@ -6,7 +6,7 @@
  *
  * Kilépési kód 0 = minden kapu zöld, aktiválható. 1 = van piros.
  * A kapuk (mind kötelező, sorrendben):
- *   1. assets/hivas-videos.js: mind a 6 videó kitöltve, és elérhető (HEAD 200 mp4-nél)
+ *   1. assets/hivas-videos.js: mind a 8 videó kitöltve (thankyou + vsl + 5 kifogás + proof), és elérhető (HEAD 200 mp4-nél)
  *   2. hivas.html: noindex, nincs em dash, nincs "TODO"/"placeholder", nincs Claims
  *      Registeren kívüli szám (csak 30+ / 11 / 59,4M Ft)
  *   3. index.html: PRECALL_PAGE flag állapota (aktiváláskor '/hivas')
@@ -24,7 +24,7 @@ const gate = (ok, msg) => out.push({ ok, msg });
 /* 1. videók */
 const cfgSrc = read('assets/hivas-videos.js');
 const cfg = new Function(`const window = {}; ${cfgSrc}; return window.HIVAS_VIDEOS;`)();
-const slots = { thankyou: cfg.thankyou, vsl: cfg.vsl, ...Object.fromEntries(Object.entries(cfg.breakouts || {}).map(([k, v]) => ['breakouts.' + k, v])) };
+const slots = { thankyou: cfg.thankyou, vsl: cfg.vsl, ...Object.fromEntries(Object.entries(cfg.breakouts || {}).map(([k, v]) => ['breakouts.' + k, v])), proof: cfg.proof };
 for (const [k, v] of Object.entries(slots)) {
   if (!v) { gate(false, `videó hiányzik: ${k}`); continue; }
   const src = v.mp4 || v.youtube || v.stream;
